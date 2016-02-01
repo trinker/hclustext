@@ -13,7 +13,7 @@ Status](https://coveralls.io/repos/trinker/hclustext/badge.svg?branch=master)](h
 <img src="inst/hclustext_logo/r_hclustext.png" width="150" alt="readability Logo">  
 
 
-**hclustext** is...
+**hclustext** is a collection of optimized tools for clustering text data via hierarchical clustering.
 
 
 Table of Contents

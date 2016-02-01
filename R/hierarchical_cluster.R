@@ -1,13 +1,20 @@
-#' Title
+#' Fit a Hierarchical Cluster
 #'
-#' Description
+#' Fit a hierarchical cluster to text data.  Uses cosine dissimilarity to generate
+#' the distance matrix used in \code{\link[fastcluster]{hclust}}.  \code{method}
+#' defaults to \code{"ward.D2"}.  A faster cosine dissimilarity calculation is used
+#' under the hood (see \code{\link[hclustext]{cosine_distance}}).  Additionally,
+#' \code{\link[fastcluster]{hclust}} is used to quickly calculate the fit.
+#' Essentially, this is a wrapper function optimized for clustering text data.
 #'
-#' @param x
-#' @param method
-#' @param \ldots
-#' @return
-#' @references
-#' @keywords
+#' @param x A data type (e.g., \code{\link[tm]{DocumentTermMatrix}} or
+#' \code{\link[tm]{TermDocumentMatrix}}).
+#' @param method The agglomeration method to be used. This must be (an
+#' unambiguous abbreviation of) one of \code{"single"}, \code{"complete"},
+#' \code{"average"}, \code{"mcquitty"}, \code{"ward.D"}, \code{"ward.D2"},
+#' \code{"centroid"}, or \code{"median"}.
+#' @param \ldots ignored.
+#' @return Returns an object of class \code{"hclust"}.
 #' @export
 #' @seealso
 #' @examples
@@ -40,18 +47,32 @@
 #'
 #' hierarchical_cluster(x) %>%
 #'     assign_cluster(y[["dialogue"]], k=6)
-hierarchical_cluster <- function(x, method = "ward.D", ...){
+#'
+#' x2 <- presidential_debates_2012 %>%
+#'     with(q_dtm(dialogue))
+#'
+#' myfit2 <- hierarchical_cluster(x2)
+#'
+#' plot(myfit2)
+#' plot(myfit2, 55)
+hierarchical_cluster <- function(x, method = "ward.D2", ...){
 
     UseMethod("hierarchical_cluster")
 
 }
 
+#' @export
+#' @rdname hierarchical_cluster
+#' @method hierarchical_cluster TermDocumentMatrix
 hierarchical_cluster.TermDocumentMatrix <- function(x, method = "ward.D", ...){
 
     x <- t(x)
     hierarchical_cluster(x, method = method, ...)
 }
 
+#' @export
+#' @rdname hierarchical_cluster
+#' @method hierarchical_cluster DocumentTermMatrix
 hierarchical_cluster.DocumentTermMatrix <- function(x, method = "ward.D", ...){
 
     removes <- slam::row_sums(x) == 0
@@ -64,8 +85,10 @@ hierarchical_cluster.DocumentTermMatrix <- function(x, method = "ward.D", ...){
     if ("term frequency" %in% attributes(x)[["weighting"]]) x <- tm::weightTfIdf(x)
     stopifnot("tf-idf" %in% attributes(x)[["weighting"]])
 
-    mat <- proxy::dist(as.matrix(x), method="cosine")
-    fit <- stats::hclust(mat, method = method)
+    #mat <- proxy::dist(as.matrix(x), method="cosine")
+    mat <- cosine_distance(x)
+    #fit <- stats::hclust(mat, method = method)
+    fit <- fastcluster::hclust(mat, method = method)
 
     dtm <- new.env(FALSE)
     dtm[["dtm"]] <- x
@@ -78,9 +101,23 @@ hierarchical_cluster.DocumentTermMatrix <- function(x, method = "ward.D", ...){
 
 
 
-## Added h here
-## for h add a line instead
-plot.hierarchical_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL, color = "red", ...){
+#' Plots a hierarchical_cluster Object
+#'
+#' Plots a hierarchical_cluster object
+#'
+#' @param x A hierarchical_cluster object.
+#' @param k The number of clusters (can supply \code{h} instead).  Defaults to
+#' use \code{approx_k} of the \code{\link[tm]{DocumentTermMatrix}} used/produced
+#' in \code{hierarchical_cluster}.  Boxes are drawn around the clusters.
+#' @param h The height at which to cut the dendrograms (determines number of
+#' clusters).  If this argument is supplied \code{k} is ignored. A line is drawn
+#' showing the cut point on the dendrogram.
+#' @param color The color to make the cluster boxes (\code{k}) or line (\code{h}).
+#' @param \ldots
+#' @method plot hierarchical_cluster
+#' @export
+plot.hierarchical_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL,
+    color = "red", ...){
 
     y <- k
     class(x) <- "hclust"

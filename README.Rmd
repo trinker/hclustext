@@ -21,7 +21,7 @@ verbadge <- sprintf('<a href="https://img.shields.io/badge/Version-%s-orange.svg
 
 <img src="inst/hclustext_logo/r_hclustext.png" width="150" alt="readability Logo">
 
-**hclustext** is...
+**hclustext** is a collection of optimized tools for clustering text data via hierarchical clustering.
 
 # Installation
 
