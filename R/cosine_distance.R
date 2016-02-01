@@ -8,12 +8,16 @@
 #' @return Returns a cosine distance object of class \code{"dist"}.
 #' @references \url{http://stackoverflow.com/a/29755756/1000343}
 #' @keywords cosine dissimilarity
+#' @rdname cosine_distance
 #' @export
 #' @author Michael Andrec and Tyler Rinker <tyler.rinker@@gmail.com>.
 #' @examples
-#' library(gofastr); library(dplyr)
-#' x <- presidential_debates_2012 %>%
-#'     with(q_dtm(dialogue))
+#' library(gofastr)
+#' library(dplyr)
+#'
+#' presidential_debates_2012 %>%
+#'     with(q_dtm(dialogue)) %>%
+#'     cosine_distance()
 cosine_distance <- function(x){
     UseMethod("cosine_distance")
 }

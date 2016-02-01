@@ -1,7 +1,9 @@
 #' Fit a Hierarchical Cluster
 #'
-#' Fit a hierarchical cluster to text data.  Uses cosine dissimilarity to generate
-#' the distance matrix used in \code{\link[fastcluster]{hclust}}.  \code{method}
+#' Fit a hierarchical cluster to text data.  Prior to distance measures being
+#' calculated the tf-idf (see \code{\link[tm]{weightTfIdf}}) is applied to the
+#' \code{\link[tm]{DocumentTermMatrix}}.  Cosine dissimilarity is used to generate
+#' the distance matrix supplied to \code{\link[fastcluster]{hclust}}.  \code{method}
 #' defaults to \code{"ward.D2"}.  A faster cosine dissimilarity calculation is used
 #' under the hood (see \code{\link[hclustext]{cosine_distance}}).  Additionally,
 #' \code{\link[fastcluster]{hclust}} is used to quickly calculate the fit.
@@ -16,7 +18,7 @@
 #' @param \ldots ignored.
 #' @return Returns an object of class \code{"hclust"}.
 #' @export
-#' @seealso
+#' @rdname hierarchical_cluster
 #' @examples
 #' library(gofastr)
 #' library(textshape)

@@ -6,8 +6,8 @@ Authors@R: c(person("Tyler", "Rinker", email =
 Maintainer: Tyler Rinker <tyler.rinker@gmail.com>
 Description: Optimized tools for clustering text data via hierarchical clustering.
 Depends: R (>= 3.2.3)
-Imports: fastcluster, graphics, slam, stats
-Suggests: dplyr, gofastr, textshape
+Imports: fastcluster, graphics, methods, slam, stats
+Suggests: dplyr, gofastr, textshape, tm
 Date: 2016-01-31
 License: GPL-2
 LazyData: TRUE

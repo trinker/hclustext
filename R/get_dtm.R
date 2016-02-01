@@ -1,20 +1,25 @@
-#' Title
+#' Get a \code{\link[tm]{DocumentTermMatrix}} Stored in a \code{hierarchical_cluster} Object
 #'
-#' Description
+#' Extract the \code{\link[tm]{DocumentTermMatrix}} supplied to/produced by a
+#' \code{\link[hclustext]{hierarchical_cluster}} object.
 #'
-#' @param x
-#' @param \ldots
-#' @return
-#' @references
-#' @keywords
+#' @param x A \code{\link[hclustext]{hierarchical_cluster}} object.
+#' @param \ldots ignored.
+#' @return Returns a \code{\link[tm]{DocumentTermMatrix}}.
 #' @export
-#' @seealso
+#' @rdname get_dtm
 #' @examples
+#' presidential_debates_2012 %>%
+#'     with(q_dtm(dialogue)) %>%
+#'     hierarchical_cluster() %>%
+#'     get_dtm()
 get_dtm <- function(x, ...){
     UseMethod("get_dtm")
 }
 
-
+#' @export
+#' @rdname get_dtm
+#' @method get_dtm hierarchical_cluster
 get_dtm.hierarchical_cluster <- function(x, ...){
     attributes(x)[["dtm"]][["dtm"]]
 }
