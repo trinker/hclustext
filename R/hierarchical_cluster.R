@@ -115,7 +115,8 @@ hierarchical_cluster.DocumentTermMatrix <- function(x, method = "ward.D", ...){
 #' clusters).  If this argument is supplied \code{k} is ignored. A line is drawn
 #' showing the cut point on the dendrogram.
 #' @param color The color to make the cluster boxes (\code{k}) or line (\code{h}).
-#' @param \ldots
+#' @param \ldots Other arguments passed to \code{\link[stats]{rect.hclust}} or
+#' \code{\link[graphics]{abline}}.
 #' @method plot hierarchical_cluster
 #' @export
 plot.hierarchical_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL,
