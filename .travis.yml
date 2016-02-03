@@ -13,6 +13,7 @@ install:
   - ./travis-tool.sh github_package jimhester/covr
   - ./travis-tool.sh github_package trinker/gofastr
   - ./travis-tool.sh github_package trinker/textshape
+  - ./travis-tool.sh github_package trinker/termco
 script:      ./travis-tool.sh run_tests
 after_success:
   - Rscript -e 'library(covr);coveralls()'
