@@ -10,7 +10,7 @@
 #' @rdname get_dtm
 #' @examples
 #' presidential_debates_2012 %>%
-#'     with(q_dtm(dialogue)) %>%
+#'     with(data_store(dialogue)) %>%
 #'     hierarchical_cluster() %>%
 #'     get_dtm()
 get_dtm <- function(x, ...){
@@ -19,8 +19,17 @@ get_dtm <- function(x, ...){
 
 #' @export
 #' @rdname get_dtm
-#' @method get_dtm hierarchical_cluster
+#' @method get_dtm data_store
 get_dtm.hierarchical_cluster <- function(x, ...){
-    attributes(x)[["dtm"]][["dtm"]]
+    get_dtm(attributes(x)[["text_data_store"]][["data"]])
 }
+
+
+#' @export
+#' @rdname get_dtm
+#' @method get_dtm hierarchical_cluster
+get_dtm.data_store <- function(x, ...){
+    x[["dtm"]]
+}
+
 

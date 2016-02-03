@@ -1,4 +1,4 @@
-#' Data Structure for \pkg{hclust}
+#' Data Structure for \pkg{hclusttext}
 #'
 #' A data structure which stores the text, DocumentTermMatrix, and information
 #' regarding removed text elements which can not be handled by the
@@ -9,15 +9,17 @@
 #' \code{\link[textshape]{combine}} prior to using \code{data_store}.
 #'
 #' @param text A character vector.
+#' @param doc.names An optional vector of document names corresponding to the
+#' length of \code{text}.
 #' @param min.term.freq The minimum times a term must appear to be included in
-#' the DocumentTermMatrix.
+#' the \code{\link[tm]{DocumentTermMatrix}}.
 #' @param min.doc.len The minimum words a document must contain to be included
 #' in the data structure (other wise it is stored as a \code{removed} element).
 #' @return Returns a list containing:
 #' \describe{
-#'   \item{dtm}{A DocumentTermMatrix of the class \code{"dgCMatrix"}}
+#'   \item{dtm}{A tf-idf weighted \code{\link[tm]{DocumentTermMatrix}}}
 #'   \item{text}{The text vector with unanalyzable elements removed}
-#'   \item{removed}{The indices of the removed text elements}
+#'   \item{removed}{The indices of the removed text elements, i.e., documents not meeting \code{min.doc.len}}
 #'   \item{n.nonsparse}{The length of the non-zero elements}
 #' }
 #' @keywords data structure
@@ -36,10 +38,19 @@
 #' ## Elements in `ds` correspond to `dat` grouping vars
 #' (ds <- with(dat, data_store(dialogue)))
 #' dplyr::select(dat, -3)
-data_store <- function(text, min.term.freq = 1, min.doc.len = 1){
+#'
+#' ## Add row names
+#' (ds2 <- with(dat, data_store(dialogue, paste(person, time, sep = "_"))))
+#' rownames(ds2[["dtm"]])
+#'
+#' ## Get a DocumentTermMatrix
+#' get_dtm(ds2)
+data_store <- function(text, doc.names, min.term.freq = 1, min.doc.len = 1){
 
     stopifnot(is.atomic(text))
-    dtm <- gofastr:::q_dtm(text)
+    if (missing(doc.names)) doc.names <- seq_len(length(text))
+    stopifnot(length(text) == length(doc.names))
+    dtm <- gofastr:::q_dtm(text, docs = doc.names)
 
     names(text) <- text_seq <- seq_len(length(text))
 
@@ -53,22 +64,17 @@ data_store <- function(text, min.term.freq = 1, min.doc.len = 1){
 
     # remove terms/docs again (ensure no zero lengths)
     # Eventually determine which elements were kept removed
-    dtm <- dtm[, slam::col_sums(dtm) >= 1]
+    dtm <- dtm[, slam::col_sums(dtm) > 0]
 
-    long_docs <- slam::row_sums(dtm) >= 1
+    long_docs <- slam::row_sums(dtm) > 0
     text <- text[long_docs]
     dtm <- dtm[long_docs,]
 
     ## Add tf-idf
     dtm <- tm::weightTfIdf(dtm)
 
-    ## Convert DTM to Matrix sparse matrix
-    Z <- Matrix::sparseMatrix(dtm$i, dtm$j, x=dtm$v)
-    colnames(Z) <- colnames(dtm)
-    rownames(Z) <- rownames(dtm)
-
-    out <- list(dtm = Z, text = unname(text),
-        removed = setdiff(text_seq, names(text)), n.nonsparse = length(dtm$v))
+    out <- list(dtm = dtm, text = unname(text),
+        removed = setdiff(text_seq, names(text)), n.nonsparse = length(dtm[["v"]]))
 
     class(out) <- "data_store"
     out

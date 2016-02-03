@@ -5,11 +5,24 @@ Authors@R: c(person("Tyler", "Rinker", email =
         "tyler.rinker@gmail.com", role = c("aut", "cre")))
 Maintainer: Tyler Rinker <tyler.rinker@gmail.com>
 Description: Optimized tools for clustering text data via hierarchical
-        clustering.
-Depends: R (>= 3.2.3)
-Imports: fastcluster, gofastr, graphics, Matrix, methods, slam, stats, tm
-Suggests: dplyr, textshape
-Date: 2016-02-01
+    clustering.
+Depends:
+    R (>= 3.2.3)
+Imports:
+    fastcluster,
+    gofastr,
+    graphics,
+    Matrix,
+    methods,
+    slam,
+    stats,
+    termco,
+    tm
+Suggests:
+    dplyr,
+    textshape
+Date: 2016-02-02
 License: GPL-2
 LazyData: TRUE
 Roxygen: list(wrap = FALSE)
+RoxygenNote: 5.0.1

@@ -20,84 +20,72 @@
 #' @export
 #' @rdname hierarchical_cluster
 #' @examples
-#' library(gofastr)
-#' library(textshape)
 #' library(dplyr)
 #'
-#' x <- with(presidential_debates_2012, q_tdm(dialogue, paste0(person, "_", time)))
-#' y <- presidential_debates_2012 %>%
-#'     dplyr::select_('person', 'time', 'dialogue') %>%
-#'     textshape::combine()  %>%
-#'     dplyr::tbl_df() %>%
-#'     dplyr::mutate(
-#'         person_time = paste(person, time, sep="_") %>%
-#'             factor(levels = colnames(x))
-#'     ) %>%
-#'     dplyr::arrange(as.numeric(person_time))
+#' x <- with(
+#'     presidential_debates_2012,
+#'     data_store(dialogue, paste(person, time, sep = "_"))
+#' )
 #'
 #' hierarchical_cluster(x) %>%
-#'     plot(k=6)
+#'     plot(k=4)
 #'
 #' hierarchical_cluster(x) %>%
 #'     plot(h=.7, lwd=2)
 #'
 #' hierarchical_cluster(x) %>%
-#'     assign_cluster(y[["dialogue"]], h=.7)
+#'     assign_cluster(h=.7)
 #'
 #' hierarchical_cluster(x, method="complete") %>%
-#'     plot(k=4)
+#'     plot(k=6)
 #'
 #' hierarchical_cluster(x) %>%
-#'     assign_cluster(y[["dialogue"]], k=6)
+#'     assign_cluster(k=6)
 #'
 #' x2 <- presidential_debates_2012 %>%
-#'     with(q_dtm(dialogue))
+#'     with(data_store(dialogue))
 #'
 #' myfit2 <- hierarchical_cluster(x2)
 #'
 #' plot(myfit2)
 #' plot(myfit2, 55)
+#'
+#' assign_cluster(myfit2, k = 55)
 hierarchical_cluster <- function(x, method = "ward.D2", ...){
 
     UseMethod("hierarchical_cluster")
 
 }
 
-#' @export
-#' @rdname hierarchical_cluster
-#' @method hierarchical_cluster TermDocumentMatrix
-hierarchical_cluster.TermDocumentMatrix <- function(x, method = "ward.D", ...){
-
-    x <- t(x)
-    hierarchical_cluster(x, method = method, ...)
-}
 
 #' @export
 #' @rdname hierarchical_cluster
-#' @method hierarchical_cluster DocumentTermMatrix
-hierarchical_cluster.DocumentTermMatrix <- function(x, method = "ward.D", ...){
+#' @method hierarchical_cluster data_store
+hierarchical_cluster.data_store <- function(x, method = "ward.D", ...){
 
-    removes <- slam::row_sums(x) == 0
-    if (sum(removes) == 0){
-        removes <- NULL
-    } else {
-        x <- x[!removes,]
-    }
-
-    if ("term frequency" %in% attributes(x)[["weighting"]]) x <- tm::weightTfIdf(x)
-    stopifnot("tf-idf" %in% attributes(x)[["weighting"]])
+#     removes <- slam::row_sums(x) == 0
+#     if (sum(removes) == 0){
+#         removes <- NULL
+#     } else {
+#         x <- x[!removes,]
+#     }
 
     #mat <- proxy::dist(as.matrix(x), method="cosine")
-    mat <- cosine_distance(x)
     #fit <- stats::hclust(mat, method = method)
-    fit <- fastcluster::hclust(mat, method = method)
 
-    dtm <- new.env(FALSE)
-    dtm[["dtm"]] <- x
+#     ## Convert DTM to Matrix sparse matrix
+#     Z <- Matrix::sparseMatrix(mat[["i"]], mat[["j"]], x=mat[["v"]])
+#     colnames(Z) <- colnames(mat)
+#     rownames(Z) <- rownames(mat)
+
+
+    fit <- fastcluster::hclust(cosine_distance(x[["dtm"]]), method = method)
+
+    text_data_store <- new.env(FALSE)
+    text_data_store[["data"]] <- x
 
     class(fit) <- c("hierarchical_cluster", class(fit))
-    attributes(fit)[["removed"]] <- if(!is.null(removes)) unname(which(removes)) else NULL
-    attributes(fit)[["dtm"]] <- dtm
+    attributes(fit)[["text_data_store"]] <- text_data_store
     fit
 }
 
@@ -109,8 +97,8 @@ hierarchical_cluster.DocumentTermMatrix <- function(x, method = "ward.D", ...){
 #'
 #' @param x A hierarchical_cluster object.
 #' @param k The number of clusters (can supply \code{h} instead).  Defaults to
-#' use \code{approx_k} of the \code{\link[tm]{DocumentTermMatrix}} used/produced
-#' in \code{hierarchical_cluster}.  Boxes are drawn around the clusters.
+#' use \code{approx_k} of the \code{\link[tm]{DocumentTermMatrix}} produced
+#' by \code{data_storage}.  Boxes are drawn around the clusters.
 #' @param h The height at which to cut the dendrograms (determines number of
 #' clusters).  If this argument is supplied \code{k} is ignored. A line is drawn
 #' showing the cut point on the dendrogram.

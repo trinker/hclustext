@@ -1,7 +1,7 @@
 #' Approximate Number of Clusters for a Text Matrix
 #'
 #' Can & Ozkarahan (1990) formula for approximating the number of clusters for
-#' a text matrix: \eqn{\(m * n\)/t} where \eqn{m} and \eqn{n} are the dimensions
+#' a text matrix: \eqn{(m * n)/t} where \eqn{m} and \eqn{n} are the dimensions
 #' of the matrix and \eqn{t} is the length of the non-zero elements in matrix
 #' \eqn{A}.
 #'
