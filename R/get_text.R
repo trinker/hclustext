@@ -9,6 +9,8 @@
 #' @export
 #' @rdname get_text
 #' @examples
+#' library(dplyr)
+#'
 #' presidential_debates_2012 %>%
 #'     with(data_store(dialogue)) %>%
 #'     hierarchical_cluster() %>%
