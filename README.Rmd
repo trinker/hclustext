@@ -23,6 +23,21 @@ verbadge <- sprintf('<a href="https://img.shields.io/badge/Version-%s-orange.svg
 
 **hclustext** is a collection of optimized tools for clustering text data via hierarchical clustering.
 
+# Function Usage
+
+The main functions, task category, & descriptions are summarized in the table below:
+
+| Function               |  Category      | Description                                                            |
+|------------------------|----------------|------------------------------------------------------------------------|
+| `data_store`           | data structure | **hclustext**'s data structure (list of dtm + text)                    |
+| `hierarchical_cluster` | cluster fit    | Fits a hierarchical cluster model                                      |
+| `assign_cluster`       | assignment     | Assigns cluster to document/text element                               |
+| `get_text`             | extraction     | Get text from various **hclustext** objects                            |
+| `get_dtm`              | extraction     | Get `tm::DocumentTermMatrix` from various **hclustext** objects        |
+| `get_removed`          | extraction     | Get removed text elements from various **hclustext** objects           |
+
+
+
 # Installation
 
 To download the development version of **hclustext**:
