@@ -4,10 +4,10 @@
 \alias{summary.assign_cluster}
 \title{Summary of an assign_cluster Object}
 \usage{
-\method{summary}{assign_cluster}(x, plot = TRUE, ...)
+\method{summary}{assign_cluster}(object, plot = TRUE, ...)
 }
 \arguments{
-\item{x}{An assign_cluster object.}
+\item{object}{An assign_cluster object.}
 
 \item{plot}{logical.  If \code{TRUE} an accompanying bar plot is produced a
 well.}

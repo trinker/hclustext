@@ -101,13 +101,13 @@ print.assign_cluster <- function(x, ...){
 #'
 #' Summary of an assign_cluster object
 #'
-#' @param x An assign_cluster object.
+#' @param object An assign_cluster object.
 #' @param plot logical.  If \code{TRUE} an accompanying bar plot is produced a
 #' well.
 #' @param \ldots ignored.
 #' @method summary assign_cluster
 #' @export
-summary.assign_cluster <- function(x, plot = TRUE, ...){
+summary.assign_cluster <- function(object, plot = TRUE, ...){
     desc <- count <- NULL
     out <- textshape::bind_table(table(as.integer(x)), "cluster", "count")
     if (isTRUE(plot)) print(termco::plot_counts(as.integer(x), item.name = "Cluster"))
