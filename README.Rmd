@@ -120,6 +120,8 @@ This object can be plotted with various `k` or `h` paremeters specified to exper
 
 - Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of the cover-coefficient-based clustering methodology for text databases. *ACM Transactions on Database Systems 15* (4): 483. doi:10.1145/99935.99938
 
+Interestingly, in the plots below where `k = 6` clusters, the model groups each of the candidates together at each of the debate times.
+
 
 ```{r}
 plot(myfit)
@@ -127,5 +129,4 @@ plot(myfit, k=6)
 plot(myfit, h = .75)
 ```
 
-Interestingly, `k = 6` clusters groups each of the candidates together at each of the debate times.
 

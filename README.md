@@ -203,7 +203,8 @@ the non-zero elements in matrix *A*.
     *ACM Transactions on Database Systems 15* (4): 483.
     <doi:10.1145/99935.99938>
 
-
+Interestingly, in the plots below where `k = 6` clusters, the model
+groups each of the candidates together at each of the debate times.
 
     plot(myfit)
 
@@ -219,6 +220,3 @@ the non-zero elements in matrix *A*.
     plot(myfit, h = .75)
 
 ![](inst/figure/unnamed-chunk-6-3.png)
-
-Interestingly, `k = 6` clusters groups each of the candidates together
-at each of the debate times.
