@@ -13,6 +13,15 @@ get_terms(x, min...)
 \arguments{
 \item{x}{A \code{\link[hclustext]{assign_cluster}} object.}
 
+\item{term.cutoff}{The lowest min/max scaled tf-idf weighting to consider
+as a document's salient term.}
+
+\item{min.n}{The minimum number o terms a term must appear in a topic to be
+displayed in the returned \code{\link[base]{data.frame}}s.}
+
+\item{nrow}{The max number of rows to display in the returned
+\code{\link[base]{data.frame}}s.}
+
 \item{\ldots}{ignored.}
 }
 \value{

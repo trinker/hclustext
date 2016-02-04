@@ -4,6 +4,12 @@
 #' each of the k clusters .
 #'
 #' @param x A \code{\link[hclustext]{assign_cluster}} object.
+#' @param term.cutoff The lowest min/max scaled tf-idf weighting to consider
+#' as a document's salient term.
+#' @param min.n The minimum number o terms a term must appear in a topic to be
+#' displayed in the returned \code{\link[base]{data.frame}}s.
+#' @param nrow The max number of rows to display in the returned
+#' \code{\link[base]{data.frame}}s.
 #' @param \ldots ignored.
 #' @return Returns a list of \code{\link[base]{data.frame}}s of top weighted terms.
 #' @export
@@ -59,10 +65,10 @@ get_terms <- function(x, min...){
 #' @method get_terms assign_cluster
 get_terms.assign_cluster <- function(x, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
 
+    desc <- topic <- n <- NULL
     dat <- attributes(x)[["data_store"]][["data"]]
 
     term <- textshape::bind_list(apply(min_max(as.matrix(dat[["dtm"]])), 1, function(x) {
-        #browser()
         names(which(x > term.cutoff))
     }), "doc", "term")
     doc_top_term <- dplyr::left_join(textshape::bind_list(x, "doc", "topic"), term, by = "doc")
