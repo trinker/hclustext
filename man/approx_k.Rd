@@ -14,6 +14,8 @@ approx_k(x, verbose = TRUE)
 }
 \arguments{
 \item{x}{A matrix.}
+
+\item{verbose}{logical.  If \code{TRUE} the k determination is printed.}
 }
 \description{
 Can & Ozkarahan (1990) formula for approximating the number of clusters for
@@ -24,7 +26,6 @@ of the matrix and \eqn{t} is the length of the non-zero elements in matrix
 \examples{
 library(gofastr)
 library(dplyr)
-library(tm)
 
 presidential_debates_2012 \%>\%
     with(q_dtm(dialogue)) \%>\%

@@ -6,7 +6,7 @@
 #' \eqn{A}.
 #'
 #' @param x A matrix.
-#' @param verbose
+#' @param verbose logical.  If \code{TRUE} the k determination is printed.
 #' @return
 #' @references Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of
 #' the cover-coefficient-based clustering methodology for text databases.
@@ -16,7 +16,6 @@
 #' @examples
 #' library(gofastr)
 #' library(dplyr)
-#' library(tm)
 #'
 #' presidential_debates_2012 %>%
 #'     with(q_dtm(dialogue)) %>%

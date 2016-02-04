@@ -12,6 +12,7 @@
 #' @return Returns an \code{assign_cluster} object; a named vector of cluster
 #' assignments with documents as names.  The object also contains the original
 #' \code{data_storage} object.
+#' @rdname assign_cluster
 #' @export
 #' @examples
 #' library(dplyr)
@@ -44,8 +45,14 @@
 #' ## split text into clusters
 #' get_text(ca)
 assign_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL, ...){
+     UseMethod("assign_cluster")
+}
 
-    stopifnot(methods::is(x, "hierarchical_cluster"))
+
+#' @export
+#' @rdname assign_cluster
+#' @method assign_cluster hierarchical_cluster
+assign_cluster.hierarchical_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL, ...){
 
 #     tv <- length(get_text(x))
 #     fl <- (length(x[["height"]]) + 1)
@@ -95,13 +102,15 @@ print.assign_cluster <- function(x, ...){
 #' Summary of an assign_cluster object
 #'
 #' @param x An assign_cluster object.
+#' @param plot logical.  If \code{TRUE} an accompanying bar plot is produced a
+#' well.
 #' @param \ldots ignored.
 #' @method summary assign_cluster
 #' @export
 summary.assign_cluster <- function(x, plot = TRUE, ...){
-    count <- NULL
+    desc <- count <- NULL
     out <- textshape::bind_table(table(as.integer(x)), "cluster", "count")
-    if (plot) termco::plot_counts(as.integer(x), item.name = "Cluster")
+    if (isTRUE(plot)) print(termco::plot_counts(as.integer(x), item.name = "Cluster"))
     dplyr::arrange(out, desc(count))
 }
 

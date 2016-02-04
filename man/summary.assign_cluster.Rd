@@ -9,6 +9,9 @@
 \arguments{
 \item{x}{An assign_cluster object.}
 
+\item{plot}{logical.  If \code{TRUE} an accompanying bar plot is produced a
+well.}
+
 \item{\ldots}{ignored.}
 }
 \description{

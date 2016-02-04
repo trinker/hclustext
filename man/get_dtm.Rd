@@ -25,6 +25,8 @@ Extract the \code{\link[tm]{DocumentTermMatrix}} supplied to/produced by a
 \code{\link[hclustext]{hierarchical_cluster}} object.
 }
 \examples{
+library(dplyr)
+
 presidential_debates_2012 \%>\%
     with(data_store(dialogue)) \%>\%
     hierarchical_cluster() \%>\%

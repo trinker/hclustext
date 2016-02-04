@@ -2,9 +2,13 @@
 % Please edit documentation in R/assign_cluster.R
 \name{assign_cluster}
 \alias{assign_cluster}
+\alias{assign_cluster.hierarchical_cluster}
 \title{Assign Clusters to Documents/Text Elements}
 \usage{
 assign_cluster(x, k = approx_k(get_dtm(x)), h = NULL, ...)
+
+\method{assign_cluster}{hierarchical_cluster}(x, k = approx_k(get_dtm(x)),
+  h = NULL, ...)
 }
 \arguments{
 \item{x}{a \code{hierarchical_cluster} object.}
