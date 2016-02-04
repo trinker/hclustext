@@ -7,7 +7,7 @@
 \usage{
 get_terms(x, min...)
 
-\method{get_terms}{hierarchical_cluster}(x, term.cutoff = 0.1, min.n = 2,
+\method{get_terms}{assign_cluster}(x, term.cutoff = 0.1, min.n = 2,
   nrow = NULL, ...)
 }
 \arguments{

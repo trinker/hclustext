@@ -56,7 +56,7 @@ get_terms <- function(x, min...){
 
 #' @export
 #' @rdname get_terms
-#' @method get_terms hierarchical_cluster
+#' @method get_terms assign_cluster
 get_terms.assign_cluster <- function(x, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
 
     dat <- attributes(x)[["data_store"]][["data"]]

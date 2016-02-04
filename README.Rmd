@@ -78,7 +78,7 @@ You are welcome to:
 
 # Demonstration
 
-## Load Packages & Data
+## Load Packages and Data
 
 ```{r}
 if (!require("pacman")) install.packages("pacman")

@@ -41,7 +41,7 @@ Table of Contents
 -   [[Installation](#installation)](#[installation](#installation))
 -   [[Contact](#contact)](#[contact](#contact))
 -   [[Demonstration](#demonstration)](#[demonstration](#demonstration))
-    -   [[Load Packages & Data](#load-packages-data)](#[load-packages--data](#load-packages-data))
+    -   [[Load Packages and Data](#load-packages-and-data)](#[load-packages-and-data](#load-packages-and-data))
     -   [[Data Structure](#data-structure)](#[data-structure](#data-structure))
     -   [[Hierarchical Cluster](#hierarchical-cluster)](#[hierarchical-cluster](#hierarchical-cluster))
 
@@ -134,8 +134,8 @@ You are welcome to:
 Demonstration
 =============
 
-Load Packages & Data
---------------------
+Load Packages and Data
+----------------------
 
     if (!require("pacman")) install.packages("pacman")
     pacman::p_load(hclustext, dplyr, textshape)
