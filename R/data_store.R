@@ -50,7 +50,7 @@ data_store <- function(text, doc.names, min.term.freq = 1, min.doc.len = 1){
     stopifnot(is.atomic(text))
     if (missing(doc.names)) doc.names <- seq_len(length(text))
     stopifnot(length(text) == length(doc.names))
-    dtm <- gofastr:::q_dtm(text, docs = doc.names)
+    dtm <- gofastr::q_dtm(text, docs = doc.names)
 
     names(text) <- text_seq <- seq_len(length(text))
 

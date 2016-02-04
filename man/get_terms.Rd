@@ -5,13 +5,13 @@
 \alias{get_terms.assign_cluster}
 \title{Get Terms Based on Cluster Assignment in \code{assign_cluster}}
 \usage{
-get_terms(x, term.cutoff = 0.1, min.n = 2, nrow = NULL, ...)
+get_terms(object, term.cutoff = 0.1, min.n = 2, nrow = NULL, ...)
 
-\method{get_terms}{assign_cluster}(x, term.cutoff = 0.1, min.n = 2,
+\method{get_terms}{assign_cluster}(object, term.cutoff = 0.1, min.n = 2,
   nrow = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{\link[hclustext]{assign_cluster}} object.}
+\item{object}{A \code{\link[hclustext]{assign_cluster}} object.}
 
 \item{term.cutoff}{The lowest min/max scaled tf-idf weighting to consider
 as a document's salient term.}

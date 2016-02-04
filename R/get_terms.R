@@ -3,7 +3,7 @@
 #' Get the terms weighted and scaled by tf-idf + min/max scaling associated with
 #' each of the k clusters .
 #'
-#' @param x A \code{\link[hclustext]{assign_cluster}} object.
+#' @param object A \code{\link[hclustext]{assign_cluster}} object.
 #' @param term.cutoff The lowest min/max scaled tf-idf weighting to consider
 #' as a document's salient term.
 #' @param min.n The minimum number o terms a term must appear in a topic to be
@@ -56,22 +56,22 @@
 #'     mtext(sprintf("Topic: %s", y), col = "blue", cex=.55, padj = 1.5)
 #' }, myterms, names(myterms))
 #' }
-get_terms <- function(x, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
+get_terms <- function(object, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
     UseMethod("get_terms")
 }
 
 #' @export
 #' @rdname get_terms
 #' @method get_terms assign_cluster
-get_terms.assign_cluster <- function(x, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
+get_terms.assign_cluster <- function(object, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
 
     desc <- topic <- n <- NULL
     dat <- attributes(x)[["data_store"]][["data"]]
 
-    term <- textshape::bind_list(apply(min_max(as.matrix(dat[["dtm"]])), 1, function(x) {
+    term <- as.data.frame(textshape::bind_list(apply(min_max(as.matrix(dat[["dtm"]])), 1, function(x) {
         names(which(x > term.cutoff))
-    }), "doc", "term")
-    doc_top_term <- dplyr::left_join(textshape::bind_list(x, "doc", "topic"), term, by = "doc")
+    }), "doc", "term"), stringsAsFactors = FALSE)
+    doc_top_term <- dplyr::left_join(as.data.frame(textshape::bind_list(x, "doc", "topic"), stringsAsFactors = FALSE), term, by = "doc")
     out <- dplyr::tally(dplyr::group_by(dplyr::filter(doc_top_term, !is.na(term)), topic, term))
     out <- dplyr::arrange(dplyr::group_by(out, topic), desc(n))
     out <- dplyr::filter(out, n >= min.n)
