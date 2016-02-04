@@ -108,4 +108,8 @@ print.data_store <- function(x, ...){
 
 
 
-
+#
+# data_store_map <- function(stopwords = tm::stopwords("english"), min.char = 3,
+#     max.char = NULL, stem = FALSE, denumber = TRUE) {
+#
+# }

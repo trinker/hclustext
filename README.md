@@ -210,18 +210,18 @@ the non-zero elements in matrix *A*.
     ## 
     ## k approximated to: 4
 
-![](README_files/figure-markdown_strict/unnamed-chunk-5-1.png)<!-- -->
+![](inst/figure/unnamed-chunk-6-1.png)<!-- -->
 
     plot(myfit, k=6)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-5-2.png)<!-- -->
+![](inst/figure/unnamed-chunk-6-2.png)<!-- -->
 
     plot(myfit, h = .75)
 
     ## 
     ## k approximated to: 4
 
-![](README_files/figure-markdown_strict/unnamed-chunk-5-3.png)<!-- -->
+![](inst/figure/unnamed-chunk-6-3.png)<!-- -->
 
 Interestingly, `k = 6` clusters groups each of the candidates together
 at each of the debate times.
