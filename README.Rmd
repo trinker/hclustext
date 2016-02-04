@@ -37,7 +37,7 @@ knitr::opts_chunk$set(fig.path = "inst/figure/")
 
 The general idea is that we turn the documents into a matrix of words.  After this we weight the terms by importance using [tf-idf](http://nlp.stanford.edu/IR-book/html/htmledition/tf-idf-weighting-1.html).  This helps the more salient words to rise to the top.  We then apply cosine distance measures to compare the terms (or features) of each document.  Cosine distance works well with sparse matrices to produce distances metrics between the documents.  The hierarchical clustering is fit to separate the documents into clusters.  The user then may apply k clusters to the fit, clustering documents with similar important text features.  The documents can then be grouped by clusters and their accompanying salient words extracted as well.
 
-# Function Usage
+# Functions
 
 The main functions, task category, & descriptions are summarized in the table below:
 

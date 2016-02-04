@@ -37,7 +37,7 @@ accompanying salient words extracted as well.
 Table of Contents
 ============
 
--   [[Function Usage](#function-usage)](#[function-usage](#function-usage))
+-   [[Functions](#functions)](#[functions](#functions))
 -   [[Installation](#installation)](#[installation](#installation))
 -   [[Contact](#contact)](#[contact](#contact))
 -   [[Demonstration](#demonstration)](#[demonstration](#demonstration))
@@ -45,7 +45,7 @@ Table of Contents
     -   [[Data Structure](#data-structure)](#[data-structure](#data-structure))
     -   [[Hierarchical Cluster](#hierarchical-cluster)](#[hierarchical-cluster](#hierarchical-cluster))
 
-Function Usage
+Functions
 ============
 
 
@@ -129,8 +129,7 @@ Contact
 You are welcome to:   
 * submit suggestions and bug-reports at: <https://github.com/trinker/hclustext/issues>   
 * send a pull request on: <https://github.com/trinker/hclustext/>  
-
-\* compose a friendly e-mail to: <tyler.rinker@gmail.com>
+* compose a friendly e-mail to: <tyler.rinker@gmail.com>
 
 Demonstration
 =============
@@ -204,22 +203,22 @@ the non-zero elements in matrix *A*.
     *ACM Transactions on Database Systems 15* (4): 483.
     <doi:10.1145/99935.99938>
 
-<!-- -->
+
 
     plot(myfit)
 
     ## 
     ## k approximated to: 4
 
-![](inst/figure/unnamed-chunk-6-1.png)<!-- -->
+![](inst/figure/unnamed-chunk-6-1.png)
 
     plot(myfit, k=6)
 
-![](inst/figure/unnamed-chunk-6-2.png)<!-- -->
+![](inst/figure/unnamed-chunk-6-2.png)
 
     plot(myfit, h = .75)
 
-![](inst/figure/unnamed-chunk-6-3.png)<!-- -->
+![](inst/figure/unnamed-chunk-6-3.png)
 
 Interestingly, `k = 6` clusters groups each of the candidates together
 at each of the debate times.

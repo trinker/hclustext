@@ -56,7 +56,7 @@
 #'     mtext(sprintf("Topic: %s", y), col = "blue", cex=.55, padj = 1.5)
 #' }, myterms, names(myterms))
 #' }
-get_terms <- function(x, min...){
+get_terms <- function(x, term.cutoff = .1, min.n = 2, nrow = NULL, ...){
     UseMethod("get_terms")
 }
 
