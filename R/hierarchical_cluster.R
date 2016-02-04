@@ -110,10 +110,10 @@ hierarchical_cluster.data_store <- function(x, method = "ward.D", ...){
 plot.hierarchical_cluster <- function(x, k = approx_k(get_dtm(x)), h = NULL,
     color = "red", ...){
 
-    y <- k
+    if (is.null(h)) y <- k
     class(x) <- "hclust"
     graphics::plot(x)
-    if (!is.null(k) & is.null(h)) stats::rect.hclust(x, k = y, border = color, ...)
+    if (is.null(h) && !is.null(k)) stats::rect.hclust(x, k = y, border = color, ...)
     if (!is.null(h)) graphics::abline(h = h, col = color, ...)
 }
 
