@@ -17,6 +17,9 @@ approx_k(x, verbose = TRUE)
 
 \item{verbose}{logical.  If \code{TRUE} the k determination is printed.}
 }
+\value{
+Returns an integer.
+}
 \description{
 Can & Ozkarahan (1990) formula for approximating the number of clusters for
 a text matrix: \eqn{(m * n)/t} where \eqn{m} and \eqn{n} are the dimensions

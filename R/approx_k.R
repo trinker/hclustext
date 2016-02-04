@@ -7,7 +7,7 @@
 #'
 #' @param x A matrix.
 #' @param verbose logical.  If \code{TRUE} the k determination is printed.
-#' @return
+#' @return Returns an integer.
 #' @references Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of
 #' the cover-coefficient-based clustering methodology for text databases.
 #' ACM Transactions on Database Systems 15 (4): 483. doi:10.1145/99935.99938. \cr
