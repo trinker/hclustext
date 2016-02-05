@@ -108,10 +108,10 @@ print.assign_cluster <- function(x, ...){
 #' @method summary assign_cluster
 #' @export
 summary.assign_cluster <- function(object, plot = TRUE, ...){
-    desc <- count <- NULL
+    count <- NULL
     out <- textshape::bind_table(table(as.integer(object)), "cluster", "count")
     if (isTRUE(plot)) print(termco::plot_counts(as.integer(object), item.name = "Cluster"))
-    dplyr::arrange(out, desc(count))
+    dplyr::arrange(as.data.frame(out), dplyr::desc(count))
 }
 
 

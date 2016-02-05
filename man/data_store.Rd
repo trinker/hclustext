@@ -4,7 +4,9 @@
 \alias{data_store}
 \title{Data Structure for \pkg{hclusttext}}
 \usage{
-data_store(text, doc.names, min.term.freq = 1, min.doc.len = 1)
+data_store(text, doc.names, min.term.freq = 1, min.doc.len = 1,
+  stopwords = NULL, min.char = 1, max.char = NULL, stem = FALSE,
+  denumber = TRUE)
 }
 \arguments{
 \item{text}{A character vector.}
@@ -17,6 +19,16 @@ the \code{\link[tm]{DocumentTermMatrix}}.}
 
 \item{min.doc.len}{The minimum words a document must contain to be included
 in the data structure (other wise it is stored as a \code{removed} element).}
+
+\item{stopwords}{A vector of stopwords to remove.}
+
+\item{min.char}{The minial length character for retained words.}
+
+\item{max.char}{The maximum length character for retained words.}
+
+\item{stem}{Logical.  If \code{TRUE} the \code{stopwords} will be stemmed.}
+
+\item{denumber}{Logical.  If \code{TRUE} numbers will be excluded.}
 }
 \value{
 Returns a list containing:

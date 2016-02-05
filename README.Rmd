@@ -92,7 +92,7 @@ data(presidential_debates_2012)
 
 The data structure for **hclustext** is very specific.  The `data_storage` produces a `DocumentTermMatrix` which maps to the original text.  The empty/removed documents are tracked within this data structure, making subsequent calls to cluster the original documents and produce weighted important terms more robust.  Making the `data_storage` object is the first step to analysis.
 
-We can give the `DocumentTermMatrix` rownames via the `doc.names` argument.  If these names are not unique they will be combined into a single document as seen below.
+We can give the `DocumentTermMatrix` rownames via the `doc.names` argument.  If these names are not unique they will be combined into a single document as seen below.  Also, if you want to do stemming, minimum character length, stopword removal or such this is when/where it's done.
 
 
 ```{r}
@@ -105,7 +105,7 @@ ds
 ```
 
 
-## Hierarchical Cluster 
+## Fit the Model: Hierarchical Cluster
 
 Next we can fit a hierarchical cluster model to the `data_store` object via `hierarchical_cluster`.
 
@@ -128,5 +128,62 @@ plot(myfit)
 plot(myfit, k=6)
 plot(myfit, h = .75)
 ```
+
+## Assigning Clusters
+
+```{r}
+ca <- assign_cluster(myfit, k = 6)
+
+ca
+```
+
+
+### Cluster Loading
+
+
+```{r}
+summary(ca)
+```
+
+### Cluster Text 
+
+```{r}
+get_text(ca)
+## Need to condense data_store text if dtm is condensed
+```
+
+### Cluster Frequent Terms
+
+```{r}
+get_terms(ca)
+```
+
+## Putting it Together
+
+I like working in a chain.  In the setup below we work within a **magrittr** pipeline to fit a model, select clusters, and examine the results.  In this example I do not condense the 2012 Presidential Debates data by speaker and timer, rather leaving every sentence as a separate document.  On my machine the initial `data_store` and model fit takes ~5-8 seconds to crun.
+
+
+```{r}
+.tic <- Sys.time()
+
+myfit2 <- presidential_debates_2012 %>%
+    with(data_store(dialogue)) %>%
+    hierarchical_cluster()
+
+difftime(Sys.time(), .tic)
+
+## View Document Loadings
+ca2 <- assign_cluster(myfit2, k = 100)
+summary(ca2)
+
+## Split Text into Clusters
+set.seed(3); inds <- sort(sample.int(100, 5))
+get_text(ca2)[inds] %>%
+    lapply(head, 10)
+
+## Get associated terms
+get_terms(ca2)[inds]
+```
+
 
 

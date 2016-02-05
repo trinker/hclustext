@@ -15,6 +15,11 @@
 #' the \code{\link[tm]{DocumentTermMatrix}}.
 #' @param min.doc.len The minimum words a document must contain to be included
 #' in the data structure (other wise it is stored as a \code{removed} element).
+#' @param stopwords A vector of stopwords to remove.
+#' @param min.char The minial length character for retained words.
+#' @param max.char The maximum length character for retained words.
+#' @param stem Logical.  If \code{TRUE} the \code{stopwords} will be stemmed.
+#' @param denumber Logical.  If \code{TRUE} numbers will be excluded.
 #' @return Returns a list containing:
 #' \describe{
 #'   \item{dtm}{A tf-idf weighted \code{\link[tm]{DocumentTermMatrix}}}
@@ -45,12 +50,21 @@
 #'
 #' ## Get a DocumentTermMatrix
 #' get_dtm(ds2)
-data_store <- function(text, doc.names, min.term.freq = 1, min.doc.len = 1){
+data_store <- function(text, doc.names, min.term.freq = 1, min.doc.len = 1,
+    stopwords = NULL, min.char = 1, max.char = NULL, stem = FALSE, denumber = TRUE){
 
     stopifnot(is.atomic(text))
     if (missing(doc.names)) doc.names <- seq_len(length(text))
     stopifnot(length(text) == length(doc.names))
-    dtm <- gofastr::q_dtm(text, docs = doc.names)
+
+    if (isTRUE(stem)){
+        dtm <- gofastr::q_dtm_stem(text, docs = doc.names)
+    } else {
+        dtm <- gofastr::q_dtm(text, docs = doc.names)
+    }
+
+    dtm <- gofastr::remove_stopwords(dtm, stopwords = stopwords, min.char = min.char,
+        max.char = max.char, stem = stem, denumber = denumber)
 
     names(text) <- text_seq <- seq_len(length(text))
 
