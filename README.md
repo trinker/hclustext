@@ -301,7 +301,7 @@ substring of the document texts.
 
 ### Cluster Frequent Terms
 
-As with many topic clustering techniques it is useful to get the to
+As with many topic clustering techniques, it is useful to get the to
 salient terms from the model. The `get_terms` function uses the
 [min-max](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling)
 scaled, [tf-idf weighted](https://en.wikipedia.org/wiki/Tf%E2%80%93idf),
@@ -310,7 +310,7 @@ terms can give a sense of the topic being discussed. Notice the absence
 of clusters 1 & 6. This is a result of only a single document included
 in each of the clusters. The `term.cutoff` hyperparmeter sets the lower
 bound on the min-max scaled tf-idf to accept. If you don't get any terms
-you may want to lower this or reduce `min.n`. Likewise these two
+you may want to lower this or reduce `min.n`. Likewise, these two
 parameters can be raised to eliminate noise.
 
     get_terms(ca, .075)
@@ -428,7 +428,7 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 5.606547 secs
+    ## Time difference of 5.160758 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
