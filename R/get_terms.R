@@ -25,7 +25,7 @@
 #'     get_terms()
 #'
 #' myterms
-#' textshape::bind_list(myterms, "Topic")
+#' textshape::bind_list(myterms[!sapply(myterms, is.null)], "Topic")
 #' \dontrun{
 #' library(ggplot2)
 #' library(gridExtra)
@@ -72,11 +72,17 @@ get_terms.assign_cluster <- function(x, term.cutoff = .1, min.n = 2, nrow = NULL
         names(which(x > term.cutoff))
     }), "doc", "term"), stringsAsFactors = FALSE)
     doc_top_term <- dplyr::left_join(as.data.frame(textshape::bind_list(x, "doc", "topic"), stringsAsFactors = FALSE), term, by = "doc")
-    out <- dplyr::tally(dplyr::group_by(dplyr::filter(doc_top_term, !is.na(term)), topic, term))
+    out <- dplyr::tally(dplyr::group_by(doc_top_term, topic, term))
     out <- dplyr::arrange(dplyr::group_by(out, topic), desc(n))
     out <- dplyr::filter(out, n >= min.n)
-    if (!is.null(nrow)) out <- dplyr::filter(dplyr::slice(dplyr::group_by(out, topic), 1:nrow), !is.na(n))
-    out2 <- lapply(split(as.data.frame(out, stringsAsFactors = FALSE)[, 2:3], out[[1]]), function(x) {rownames(x) <- NULL;x})
+    if (!is.null(nrow)) out <- dplyr::slice(dplyr::group_by(out, topic), 1:nrow)
+    out2 <- lapply(split(as.data.frame(out, stringsAsFactors = FALSE)[, 2:3], out[[1]]), function(x) {
+        rownames(x) <- NULL
+        x <- dplyr::filter(x, !is.na(term))
+        if (nrow(x) == 0) return(NULL)
+        x
+    })
+
     class(out2) <- c("get_terms", class(out2))
     out2
 }

@@ -66,6 +66,12 @@ data_store <- function(text, doc.names, min.term.freq = 1, min.doc.len = 1,
     dtm <- gofastr::remove_stopwords(dtm, stopwords = stopwords, min.char = min.char,
         max.char = max.char, stem = stem, denumber = denumber)
 
+    if (nrow(dtm) != length(text)){
+        text <- dplyr::group_by_(dplyr::data_frame(text=text, doc.names=doc.names), "doc.names")
+        text <- dplyr::summarise(text, text = paste(text, collapse = " "))
+        text <- text[match(text[["doc.names"]], rownames(dtm)),][["text"]]
+    }
+
     names(text) <- text_seq <- seq_len(length(text))
 
     # remove terms

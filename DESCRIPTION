@@ -10,7 +10,7 @@ Depends: R (>= 3.2.3)
 Imports: fastcluster, gofastr, graphics, slam, stats, termco,
         textshape, tm
 Suggests: dplyr
-Date: 2016-02-04
+Date: 2016-02-05
 License: GPL-2
 LazyData: TRUE
 Roxygen: list(wrap = FALSE)

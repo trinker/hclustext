@@ -1,4 +1,4 @@
-hclustext
+hclustext   [![Follow](https://img.shields.io/twitter/follow/tylerrinker.svg?style=social)](https://twitter.com/intent/follow?screen_name=tylerrinker)
 ============
 
 
@@ -48,6 +48,7 @@ Table of Contents
         -   [[Cluster Loading](#cluster-loading)](#[cluster-loading](#cluster-loading))
         -   [[Cluster Text](#cluster-text)](#[cluster-text](#cluster-text))
         -   [[Cluster Frequent Terms](#cluster-frequent-terms)](#[cluster-frequent-terms](#cluster-frequent-terms))
+        -   [[Clusters, Terms, and Docs Plot](#clusters-terms-and-docs-plot)](#[clusters-terms-and-docs-plot](#clusters-terms-and-docs-plot))
     -   [[Putting it Together](#putting-it-together)](#[putting-it-together](#putting-it-together))
 
 Functions
@@ -143,7 +144,7 @@ Load Packages and Data
 ----------------------
 
     if (!require("pacman")) install.packages("pacman")
-    pacman::p_load(hclustext, dplyr, textshape)
+    pacman::p_load(hclustext, dplyr, textshape, ggplot2, tidyr)
 
     data(presidential_debates_2012)
 
@@ -169,7 +170,7 @@ character length, stopword removal or such this is when/where it's done.
 
     ds
 
-    ## Text Elements      : 2,912
+    ## Text Elements      : 10
     ## Elements Removed   : 0
     ## Documents          : 10
     ## Terms              : 3,369
@@ -194,7 +195,7 @@ via `hierarchical_cluster`.
     ## Cluster method   : ward.D 
     ## Number of objects: 10
 
-This object can be plotted with various `k` or `h` paremeters specified
+This object can be plotted with various `k` or `h` parameters specified
 to experiment with cutting the dendrogram. This cut will determine the
 number of clusters or topics that will be generated in the next step.
 The visual inspection allows for determining how to cluster the data as
@@ -230,6 +231,13 @@ groups each of the candidates together at each of the debate times.
 Assigning Clusters
 ------------------
 
+The `assign_cluster` function allows the user to dictate the umber of
+clusters. Because the model has already been fit the cluster assignment
+is merely selecting the branches from the dendrogram, and is thus very
+quick. Unlike many clustering techniques the number of clusters is done
+after the model is fit, this allows for speedy cluster assignment,
+meaning the user can experiment with the number of clusters.
+
     ca <- assign_cluster(myfit, k = 6)
 
     ca
@@ -242,6 +250,11 @@ Assigning Clusters
     ##                5                2
 
 ### Cluster Loading
+
+To check the number of documents loading on a cluster there is a
+`summary` method for `assign_cluster` which provides a descending data
+frame of clusters and counts. Additionally, a horizontal bar plot shows
+the document loadings on each cluster.
 
     summary(ca)
 
@@ -257,36 +270,76 @@ Assigning Clusters
 
 ### Cluster Text
 
-    get_text(ca)
+The user can grab the texts from the original documents grouped by
+cluster using the `get_text` function. Here I do a 40 character
+substring of the document texts.
 
-    ## Warning in split.default(get_text(attributes(x)[["data_store"]]
-    ## [["data"]]), : data length is not a multiple of split variable
+    get_text(ca) %>%
+        lapply(substring, 1, 40)
 
     ## $`1`
-    ##   [1] "We'll talk about specifically about health care in a moment."                                            
-
-    ## Need to condense data_store text if dtm is condensed
+    ## [1] "Good evening from Hofstra University in "
+    ## 
+    ## $`2`
+    ## [1] "We'll talk about specifically about heal"
+    ## [2] "Good evening from the campus of Lynn Uni"
+    ## 
+    ## $`3`
+    ## [1] "Jim, if I if I can just respond very qui"
+    ## [2] "What I support is no change for current "
+    ## 
+    ## $`4`
+    ## [1] "Jeremy, first of all, your future is bri"
+    ## [2] "Thank you, Jeremy. I appreciate your you"
+    ## 
+    ## $`5`
+    ## [1] "Well, my first job as commander in chief"
+    ## [2] "Thank you, Bob. And thank you for agreei"
+    ## 
+    ## $`6`
+    ## [1] "Mister President, Governor Romney, as a "
 
 ### Cluster Frequent Terms
 
-    get_terms(ca)
+As with many topic clustering techniques it is useful to get the to
+salient terms from the model. The `get_terms` function uses the
+[min-max](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling)
+scaled, [tf-idf weighted](https://en.wikipedia.org/wiki/Tf%E2%80%93idf),
+`DocumentTermMatrix` to extract the most frequent salient terms. These
+terms can give a sense of the topic being discussed. Notice the absence
+of clusters 1 & 6. This is a result of only a single document included
+in each of the clusters.
+
+    get_terms(ca, .075)
 
     ## $`2`
-    ##        term n
-    ## 1      each 2
-    ## 2 gentlemen 2
-    ## 3   minutes 2
-    ## 4    mister 2
-    ## 5    romney 2
-    ## 6   segment 2
-    ## 7       sir 2
+    ##          term n
+    ## 1        each 2
+    ## 2   gentlemen 2
+    ## 3          go 2
+    ## 4       leave 2
+    ## 5     minutes 2
+    ## 6      mister 2
+    ## 7       night 2
+    ## 8      romney 2
+    ## 9     segment 2
+    ## 10      segue 2
+    ## 11        sir 2
+    ## 12 statements 2
     ## 
     ## $`3`
-    ##        term n
-    ## 1     banks 2
-    ## 2      care 2
-    ## 3    health 2
-    ## 4 insurance 2
+    ##          term n
+    ## 1       banks 2
+    ## 2       board 2
+    ## 3        care 2
+    ## 4     federal 2
+    ## 5      health 2
+    ## 6   insurance 2
+    ## 7    medicare 2
+    ## 8        plan 2
+    ## 9  republican 2
+    ## 10     that's 2
+    ## 11       they 2
     ## 
     ## $`4`
     ##          term n
@@ -294,14 +347,64 @@ Assigning Clusters
     ## 2 immigration 2
     ## 3        jobs 2
     ## 4         oil 2
+    ## 5  production 2
+    ## 6        sure 2
+    ## 7      that's 2
+    ## 8       women 2
     ## 
     ## $`5`
-    ##       term n
-    ## 1     iran 2
-    ## 2   israel 2
-    ## 3 military 2
-    ## 4  nuclear 2
-    ## 5     they 2
+    ##         term n
+    ## 1       home 2
+    ## 2       iran 2
+    ## 3     israel 2
+    ## 4   military 2
+    ## 5    nuclear 2
+    ## 6  sanctions 2
+    ## 7      stand 2
+    ## 8       sure 2
+    ## 9       they 2
+    ## 10    threat 2
+    ## 11    troops 2
+
+### Clusters, Terms, and Docs Plot
+
+Here I plot the clusters, terms, and documents (grouping variables)
+together as a combined heatmap. This can be useful for viewing &
+comparing what documents are clustering together in the context of the
+cluster's salient terms. This example also shows how to use the cluster
+terms as a lookup key to extract probable salient terms for a given
+document.
+
+    key <- data_frame(
+        cluster = 1:6,
+        labs = get_terms(ca, .085) %>%
+            bind_list("cluster") %>%
+            select(-n) %>%
+            group_by(cluster) %>%
+            summarize(term=paste(term, collapse=", ")) %>%
+            apply(1, paste, collapse=": ") %>%
+            c("1:", ., "6:")
+    )
+
+    ca %>%
+        bind_vector("id", "cluster") %>%
+        separate(id, c("person", "time"), sep="_") %>%
+        tbl_df() %>%
+        left_join(key) %>%
+        mutate(n = 1) %>%
+        mutate(labs = factor(labs, levels=rev(key[["labs"]]))) %>%
+        unite("time_person", time, person, sep="\n") %>%
+        select(-cluster) %>%
+        complete(time_person, labs) %>%  
+        mutate(n = factor(ifelse(is.na(n), FALSE, TRUE))) %>%
+        ggplot(aes(time_person, labs, fill = n)) +
+            geom_tile() +
+            scale_fill_manual(values=c("grey90", "red"), guide=FALSE) +
+            labs(x=NULL, y=NULL) 
+
+    ## Joining by: "cluster"
+
+![](inst/figure/unnamed-chunk-11-1.png)
 
 Putting it Together
 -------------------
@@ -311,7 +414,8 @@ I like working in a chain. In the setup below we work within a
 results. In this example I do not condense the 2012 Presidential Debates
 data by speaker and timer, rather leaving every sentence as a separate
 document. On my machine the initial `data_store` and model fit takes
-~5-8 seconds to crun.
+~5-8 seconds to run. Note that I do restrict the number of clusters
+texts and terms to a random 5 for the sake of space.
 
     .tic <- Sys.time()
 
@@ -321,13 +425,13 @@ document. On my machine the initial `data_store` and model fit takes
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 7.934837 secs
+    ## Time difference of 5.734812 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
     summary(ca2)
 
-![](inst/figure/unnamed-chunk-11-1.png)
+![](inst/figure/unnamed-chunk-12-1.png)
 
     ##     cluster count
     ## 1         7   692
@@ -433,6 +537,7 @@ document. On my machine the initial `data_store` and model fit takes
 
     ## Split Text into Clusters
     set.seed(3); inds <- sort(sample.int(100, 5))
+
     get_text(ca2)[inds] %>%
         lapply(head, 10)
 
@@ -496,35 +601,26 @@ document. On my machine the initial `data_store` and model fit takes
     ##  [9] "And when I hear Governor Romney say he's a big coal guy, I mean, keep in mind, when Governor, when you were governor of Massachusetts, you stood in front of a coal plant and pointed at it and said, This plant kills, and took great pride in shutting it down."
     ## [10] "With respect to something like coal, we made the largest investment in clean coal technology, to make sure that even as we're producing more coal, we're producing it cleaner and smarter."
 
-    ## Get associated terms
+    ## Get Associated Terms
     get_terms(ca2)[inds]
 
-    ## $`18`
-    ##   term  n
-    ## 1   ok 14
+    ## $`17`
+    ## NULL
     ## 
-    ## $`33`
+    ## $`32`
     ##         term n
-    ## 1        his 4
-    ## 2     policy 4
-    ## 3    foreign 3
-    ## 4     bigger 2
-    ## 5      first 2
-    ## 6 philosophy 2
-    ## 7     thirty 2
-    ## 8      torch 2
-    ## 9       year 2
+    ## 1     please 3
+    ## 2 bipartisan 2
+    ## 3    mistake 2
     ## 
-    ## $`40`
-    ##       term n
-    ## 1 repealed 3
+    ## $`38`
+    ##        term n
+    ## 1 investing 2
+    ## 2      jobs 2
     ## 
-    ## $`64`
-    ##     term n
-    ## 1 excuse 4
-    ## 2     me 4
+    ## $`58`
+    ## NULL
     ## 
-    ## $`90`
-    ##     term n
-    ## 1 didn't 8
-    ## 2     he 3
+    ## $`80`
+    ##   term n
+    ## 1 coal 3

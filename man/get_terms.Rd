@@ -42,7 +42,7 @@ myterms <- presidential_debates_2012 \%>\%
     get_terms()
 
 myterms
-textshape::bind_list(myterms, "Topic")
+textshape::bind_list(myterms[!sapply(myterms, is.null)], "Topic")
 \dontrun{
 library(ggplot2)
 library(gridExtra)

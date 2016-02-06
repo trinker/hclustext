@@ -82,7 +82,7 @@ You are welcome to:
 
 ```{r}
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(hclustext, dplyr, textshape)
+pacman::p_load(hclustext, dplyr, textshape, ggplot2, tidyr)
 
 data(presidential_debates_2012)
 ```
@@ -116,7 +116,7 @@ myfit
 ```
 
 
-This object can be plotted with various `k` or `h` paremeters specified to experiment with cutting the dendrogram.  This cut will determine the number of clusters or topics that will be generated in the next step.  The visual inspection allows for determining how to cluster the data as well as determining if a tf-idf, cosine, hierarchical cluster model is a right fit for the data and task.  By default `plot` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$.
+This object can be plotted with various `k` or `h` parameters specified to experiment with cutting the dendrogram.  This cut will determine the number of clusters or topics that will be generated in the next step.  The visual inspection allows for determining how to cluster the data as well as determining if a tf-idf, cosine, hierarchical cluster model is a right fit for the data and task.  By default `plot` uses an approximation of `k` based on Can & Ozkarahan's (1990) formula $(m * n)/t$ where $m$ and $n$ are the dimensions of the matrix and $t$ is the length of the non-zero elements in matrix $A$.
 
 - Can, F., Ozkarahan, E. A. (1990). Concepts and effectiveness of the cover-coefficient-based clustering methodology for text databases. *ACM Transactions on Database Systems 15* (4): 483. doi:10.1145/99935.99938
 
@@ -131,6 +131,9 @@ plot(myfit, h = .75)
 
 ## Assigning Clusters
 
+The `assign_cluster` function allows the user to dictate the umber of clusters.  Because the model has already been fit the cluster assignment is merely selecting the branches from the dendrogram, and is thus very quick.  Unlike many clustering techniques the number of clusters is done after the model is fit, this allows for speedy cluster assignment, meaning the user can experiment with the number of clusters.
+
+
 ```{r}
 ca <- assign_cluster(myfit, k = 6)
 
@@ -140,30 +143,71 @@ ca
 
 ### Cluster Loading
 
+To check the number of documents loading on a cluster there is a `summary` method for `assign_cluster` which provides a descending data frame of clusters and counts.  Additionally, a horizontal bar plot shows the document loadings on each cluster.
 
 ```{r}
 summary(ca)
 ```
 
+
 ### Cluster Text 
 
+The user can grab the texts from the original documents grouped by cluster using the `get_text` function.  Here I do a 40 character substring of the document texts.
+
 ```{r}
-get_text(ca)
-## Need to condense data_store text if dtm is condensed
+get_text(ca) %>%
+    lapply(substring, 1, 40)
 ```
+
 
 ### Cluster Frequent Terms
 
+As with many topic clustering techniques it is useful to get the to salient terms from the model.  The `get_terms` function uses the [min-max](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling) scaled, [tf-idf weighted](https://en.wikipedia.org/wiki/Tf%E2%80%93idf), `DocumentTermMatrix` to extract the most frequent salient terms.  These terms can give a sense of the topic being discussed.  Notice the absence of clusters 1 & 6.  This is a result of only a single document included in each of the clusters.
+
 ```{r}
-get_terms(ca)
+get_terms(ca, .075)
 ```
+
+### Clusters, Terms, and Docs Plot
+
+Here I plot the clusters, terms, and documents (grouping variables) together as a combined heatmap.  This can be useful for viewing & comparing what documents are clustering together in the context of the cluster's salient terms. This example also shows how to use the cluster terms as a lookup key to extract probable salient terms for a given document.
+
+```{r}
+key <- data_frame(
+    cluster = 1:6,
+    labs = get_terms(ca, .085) %>%
+        bind_list("cluster") %>%
+        select(-n) %>%
+        group_by(cluster) %>%
+        summarize(term=paste(term, collapse=", ")) %>%
+        apply(1, paste, collapse=": ") %>%
+        c("1:", ., "6:")
+)
+
+ca %>%
+    bind_vector("id", "cluster") %>%
+    separate(id, c("person", "time"), sep="_") %>%
+    tbl_df() %>%
+    left_join(key) %>%
+    mutate(n = 1) %>%
+    mutate(labs = factor(labs, levels=rev(key[["labs"]]))) %>%
+    unite("time_person", time, person, sep="\n") %>%
+    select(-cluster) %>%
+    complete(time_person, labs) %>%  
+    mutate(n = factor(ifelse(is.na(n), FALSE, TRUE))) %>%
+    ggplot(aes(time_person, labs, fill = n)) +
+        geom_tile() +
+        scale_fill_manual(values=c("grey90", "red"), guide=FALSE) +
+        labs(x=NULL, y=NULL) 
+```        
+
 
 ## Putting it Together
 
-I like working in a chain.  In the setup below we work within a **magrittr** pipeline to fit a model, select clusters, and examine the results.  In this example I do not condense the 2012 Presidential Debates data by speaker and timer, rather leaving every sentence as a separate document.  On my machine the initial `data_store` and model fit takes ~5-8 seconds to crun.
+I like working in a chain.  In the setup below we work within a **magrittr** pipeline to fit a model, select clusters, and examine the results.  In this example I do not condense the 2012 Presidential Debates data by speaker and timer, rather leaving every sentence as a separate document.  On my machine the initial `data_store` and model fit takes ~5-8 seconds to run.  Note that I do restrict the number of clusters texts and terms to a random 5 for the sake of space.
 
 
-```{r}
+```{r, fig.height = 9}
 .tic <- Sys.time()
 
 myfit2 <- presidential_debates_2012 %>%
@@ -178,10 +222,11 @@ summary(ca2)
 
 ## Split Text into Clusters
 set.seed(3); inds <- sort(sample.int(100, 5))
+
 get_text(ca2)[inds] %>%
     lapply(head, 10)
 
-## Get associated terms
+## Get Associated Terms
 get_terms(ca2)[inds]
 ```
 
