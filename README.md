@@ -271,7 +271,7 @@ the document loadings on each cluster.
 ### Cluster Text
 
 The user can grab the texts from the original documents grouped by
-cluster using the `get_text` function. Here I do a 40 character
+cluster using the `get_text` function. Here I demo a 40 character
 substring of the document texts.
 
     get_text(ca) %>%
@@ -308,7 +308,10 @@ scaled, [tf-idf weighted](https://en.wikipedia.org/wiki/Tf%E2%80%93idf),
 `DocumentTermMatrix` to extract the most frequent salient terms. These
 terms can give a sense of the topic being discussed. Notice the absence
 of clusters 1 & 6. This is a result of only a single document included
-in each of the clusters.
+in each of the clusters. The `term.cutoff` hyperparmeter sets the lower
+bound on the min-max scaled tf-idf to accept. If you don't get any terms
+you may want to lower this or reduce `min.n`. Likewise these two
+parameters can be raised to eliminate noise.
 
     get_terms(ca, .075)
 
@@ -412,10 +415,10 @@ Putting it Together
 I like working in a chain. In the setup below we work within a
 **magrittr** pipeline to fit a model, select clusters, and examine the
 results. In this example I do not condense the 2012 Presidential Debates
-data by speaker and timer, rather leaving every sentence as a separate
-document. On my machine the initial `data_store` and model fit takes
-~5-8 seconds to run. Note that I do restrict the number of clusters
-texts and terms to a random 5 for the sake of space.
+data by speaker and time, rather leaving every sentence as a separate
+document. On my machine the initial `data_store` and model fit take ~5-8
+seconds to run. Note that I do restrict the number of clusters (for
+texts and terms) to a random 5 clusters for the sake of space.
 
     .tic <- Sys.time()
 
@@ -425,115 +428,28 @@ texts and terms to a random 5 for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 5.734812 secs
+    ## Time difference of 5.606547 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
-    summary(ca2)
+    summary(ca2) %>% 
+        head(12)
 
 ![](inst/figure/unnamed-chunk-12-1.png)
 
-    ##     cluster count
-    ## 1         7   692
-    ## 2         3   368
-    ## 3        33   133
-    ## 4         5   106
-    ## 5        59    67
-    ## 6         8    57
-    ## 7        61    51
-    ## 8        53    48
-    ## 9        13    47
-    ## 10       27    41
-    ## 11       38    40
-    ## 12       12    37
-    ## 13       29    37
-    ## 14       45    31
-    ## 15       32    29
-    ## 16       43    28
-    ## 17       40    27
-    ## 18       44    27
-    ## 19       50    27
-    ## 20        2    25
-    ## 21       30    24
-    ## 22       34    24
-    ## 23       36    23
-    ## 24       55    23
-    ## 25       31    22
-    ## 26       37    22
-    ## 27        1    21
-    ## 28       24    21
-    ## 29       63    20
-    ## 30       70    20
-    ## 31       47    19
-    ## 32       56    19
-    ## 33       73    19
-    ## 34       57    18
-    ## 35        9    17
-    ## 36       15    17
-    ## 37       21    17
-    ## 38       65    17
-    ## 39       66    17
-    ## 40       28    16
-    ## 41       49    16
-    ## 42       51    16
-    ## 43       69    15
-    ## 44       76    15
-    ## 45       80    15
-    ## 46       88    15
-    ## 47        6    14
-    ## 48       11    14
-    ## 49       16    14
-    ## 50       17    14
-    ## 51       18    14
-    ## 52       75    14
-    ## 53        4    13
-    ## 54       25    13
-    ## 55       42    13
-    ## 56       48    13
-    ## 57       67    13
-    ## 58       79    13
-    ## 59       39    12
-    ## 60       58    12
-    ## 61       78    12
-    ## 62       83    12
-    ## 63       95    12
-    ## 64       35    11
-    ## 65       60    11
-    ## 66       74    11
-    ## 67       92    11
-    ## 68       10    10
-    ## 69       22    10
-    ## 70       26    10
-    ## 71       98    10
-    ## 72       14     9
-    ## 73       68     9
-    ## 74       77     9
-    ## 75       81     9
-    ## 76       82     9
-    ## 77       87     9
-    ## 78       90     9
-    ## 79       23     8
-    ## 80       72     8
-    ## 81       99     8
-    ## 82      100     8
-    ## 83       20     7
-    ## 84       52     7
-    ## 85       54     7
-    ## 86       62     7
-    ## 87       71     7
-    ## 88       85     7
-    ## 89       97     7
-    ## 90       46     6
-    ## 91       84     6
-    ## 92       89     6
-    ## 93       86     5
-    ## 94       91     5
-    ## 95       94     5
-    ## 96       96     5
-    ## 97       19     4
-    ## 98       41     4
-    ## 99       64     4
-    ## 100      93     4
+    ##    cluster count
+    ## 1        7   692
+    ## 2        3   368
+    ## 3       33   133
+    ## 4        5   106
+    ## 5       59    67
+    ## 6        8    57
+    ## 7       61    51
+    ## 8       53    48
+    ## 9       13    47
+    ## 10      27    41
+    ## 11      38    40
+    ## 12      12    37
 
     ## Split Text into Clusters
     set.seed(3); inds <- sort(sample.int(100, 5))
@@ -602,25 +518,37 @@ texts and terms to a random 5 for the sake of space.
     ## [10] "With respect to something like coal, we made the largest investment in clean coal technology, to make sure that even as we're producing more coal, we're producing it cleaner and smarter."
 
     ## Get Associated Terms
-    get_terms(ca2)[inds]
+    get_terms(ca2, term.cutoff = .07)[inds]
 
     ## $`17`
-    ## NULL
+    ##          term n
+    ## 1       point 7
+    ## 2        plan 6
+    ## 3 president's 2
     ## 
     ## $`32`
     ##         term n
-    ## 1     please 3
-    ## 2 bipartisan 2
-    ## 3    mistake 2
+    ## 1      issue 4
+    ## 2     please 4
+    ## 3   election 3
+    ## 4      think 3
+    ## 5 bipartisan 2
+    ## 6    mistake 2
     ## 
     ## $`38`
-    ##        term n
-    ## 1 investing 2
-    ## 2      jobs 2
+    ##          term n
+    ## 1   investing 3
+    ## 2 investments 3
+    ## 3   companies 2
+    ## 4        jobs 2
     ## 
     ## $`58`
-    ## NULL
+    ##        term n
+    ## 1  question 5
+    ## 2 katherine 2
+    ## 3      next 2
     ## 
     ## $`80`
-    ##   term n
-    ## 1 coal 3
+    ##      term n
+    ## 1    coal 4
+    ## 2 natural 3
