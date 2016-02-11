@@ -49,6 +49,7 @@ Table of Contents
         -   [[Cluster Text](#cluster-text)](#[cluster-text](#cluster-text))
         -   [[Cluster Frequent Terms](#cluster-frequent-terms)](#[cluster-frequent-terms](#cluster-frequent-terms))
         -   [[Clusters, Terms, and Docs Plot](#clusters-terms-and-docs-plot)](#[clusters-terms-and-docs-plot](#clusters-terms-and-docs-plot))
+        -   [[Cluster Documents](#cluster-documents)](#[cluster-documents](#cluster-documents))
     -   [[Putting it Together](#putting-it-together)](#[putting-it-together](#putting-it-together))
 
 Functions
@@ -58,11 +59,11 @@ Functions
 The main functions, task category, & descriptions are summarized in the
 table below:
 
-<table style="width:160%;">
+<table style="width:161%;">
 <colgroup>
 <col width="34%" />
 <col width="23%" />
-<col width="101%" />
+<col width="102%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -105,7 +106,12 @@ table below:
 <tr class="odd">
 <td align="left"><code>get_terms</code></td>
 <td align="left">extraction</td>
-<td align="left">Get weighted important terms from an <strong>assign_cluster</strong> object</td>
+<td align="left">Get clustered weighted important terms from an <strong>assign_cluster</strong> object</td>
+</tr>
+<tr class="even">
+<td align="left"><code>get_documents</code></td>
+<td align="left">extraction</td>
+<td align="left">Get clustered documents from an <strong>assign_cluster</strong> object</td>
 </tr>
 </tbody>
 </table>
@@ -409,6 +415,32 @@ document.
 
 ![](inst/figure/unnamed-chunk-11-1.png)
 
+### Cluster Documents
+
+The `get_documents` function grabs the documents associated with a
+particular cluster. This is most useful in cases where the number of
+documents is small and they have been given names.
+
+    get_documents(ca)
+
+    ## $`1`
+    ## [1] "CROWLEY_time 2"
+    ## 
+    ## $`2`
+    ## [1] "LEHRER_time 1"    "SCHIEFFER_time 3"
+    ## 
+    ## $`3`
+    ## [1] "OBAMA_time 1"  "ROMNEY_time 1"
+    ## 
+    ## $`4`
+    ## [1] "OBAMA_time 2"  "ROMNEY_time 2"
+    ## 
+    ## $`5`
+    ## [1] "OBAMA_time 3"  "ROMNEY_time 3"
+    ## 
+    ## $`6`
+    ## [1] "QUESTION_time 2"
+
 Putting it Together
 -------------------
 
@@ -428,14 +460,14 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 5.160758 secs
+    ## Time difference of 7.791764 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
     summary(ca2) %>% 
         head(12)
 
-![](inst/figure/unnamed-chunk-12-1.png)
+![](inst/figure/unnamed-chunk-13-1.png)
 
     ##    cluster count
     ## 1        7   692

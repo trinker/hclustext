@@ -41,16 +41,16 @@ The general idea is that we turn the documents into a matrix of words.  After th
 
 The main functions, task category, & descriptions are summarized in the table below:
 
-| Function               |  Category      | Description                                                            |
-|------------------------|----------------|------------------------------------------------------------------------|
-| `data_store`           | data structure | **hclustext**'s data structure (list of dtm + text)                    |
-| `hierarchical_cluster` | cluster fit    | Fits a hierarchical cluster model                                      |
-| `assign_cluster`       | assignment     | Assigns cluster to document/text element                               |
-| `get_text`             | extraction     | Get text from various **hclustext** objects                            |
-| `get_dtm`              | extraction     | Get `tm::DocumentTermMatrix` from various **hclustext** objects        |
-| `get_removed`          | extraction     | Get removed text elements from various **hclustext** objects           |
-| `get_terms`            | extraction     | Get weighted important terms from an **assign_cluster** object         |
-
+| Function               |  Category      | Description                                                             |
+|------------------------|----------------|-------------------------------------------------------------------------|
+| `data_store`           | data structure | **hclustext**'s data structure (list of dtm + text)                     |
+| `hierarchical_cluster` | cluster fit    | Fits a hierarchical cluster model                                       |
+| `assign_cluster`       | assignment     | Assigns cluster to document/text element                                |
+| `get_text`             | extraction     | Get text from various **hclustext** objects                             |
+| `get_dtm`              | extraction     | Get `tm::DocumentTermMatrix` from various **hclustext** objects         |
+| `get_removed`          | extraction     | Get removed text elements from various **hclustext** objects            |
+| `get_terms`            | extraction     | Get clustered weighted important terms from an **assign_cluster** object|
+| `get_documents`        | extraction     | Get clustered documents from an **assign_cluster** object               |
 
 
 # Installation
@@ -200,6 +200,15 @@ ca %>%
         scale_fill_manual(values=c("grey90", "red"), guide=FALSE) +
         labs(x=NULL, y=NULL) 
 ```        
+
+
+### Cluster Documents
+
+The `get_documents` function grabs the documents associated with a particular cluster.  This is most useful in cases where the number of documents is small and they have been given names.
+
+```{r}
+get_documents(ca)
+```
 
 
 ## Putting it Together
