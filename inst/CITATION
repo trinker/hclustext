@@ -2,15 +2,15 @@ citHeader("To cite hclustext in publications, please use:")
 
 
 citEntry(entry = "manual",
-    title = "{hclustext}: A ...",
+    title = "{hclustext}: Optimized hierarchical clustering for text data",
     author = "Tyler W. Rinker",
     organization = "University at Buffalo/SUNY",
     address = "Buffalo, New York",
-    note = "version 0.0.1",
+    note = "version 0.1.0",
     year = "2016",
-    url = "http://github.com/trinker/hclustext", 
+    url = "http://github.com/trinker/hclustext",
     textVersion  = paste("Rinker, T. W. (2016).",
-        "hclustext: ...",
-        "version 0.0.1. University at Buffalo. Buffalo, New York.",
+        "hclustext: Optimized hierarchical clustering for text data",
+        "version 0.1.0. University at Buffalo. Buffalo, New York.",
         "http://github.com/trinker/hclustext")
 )

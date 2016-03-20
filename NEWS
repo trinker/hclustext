@@ -17,6 +17,24 @@ And constructed with the following guidelines:
 * Bug fixes and misc changes bumps the patch
 
 
+hclustext 0.1.0
+----------------------------------------------------------------
+
+BUG FIXES
+
+* `get_dtm` for `data_store` and `hierarchical_cluster` were reversed (code vs.
+  documentation).
+
+NEW FEATURES
+
+MINOR FEATURES
+
+IMPROVEMENTS
+
+CHANGES
+
+
+
 hclustext 0.0.1
 ----------------------------------------------------------------
 

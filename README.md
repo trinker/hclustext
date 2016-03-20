@@ -9,7 +9,7 @@ developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repo
 Status](https://travis-ci.org/trinker/hclustext.svg?branch=master)](https://travis-ci.org/trinker/hclustext)
 [![Coverage
 Status](https://coveralls.io/repos/trinker/hclustext/badge.svg?branch=master)](https://coveralls.io/r/trinker/hclustext?branch=master)
-<a href="https://img.shields.io/badge/Version-0.0.1-orange.svg"><img src="https://img.shields.io/badge/Version-0.0.1-orange.svg" alt="Version"/></a>
+<a href="https://img.shields.io/badge/Version-0.1.0-orange.svg"><img src="https://img.shields.io/badge/Version-0.1.0-orange.svg" alt="Version"/></a>
 </p>
 <img src="inst/hclustext_logo/r_hclustext.png" width="150" alt="readability Logo">
 
@@ -37,20 +37,20 @@ accompanying salient words extracted as well.
 Table of Contents
 ============
 
--   [[Functions](#functions)](#[functions](#functions))
--   [[Installation](#installation)](#[installation](#installation))
--   [[Contact](#contact)](#[contact](#contact))
--   [[Demonstration](#demonstration)](#[demonstration](#demonstration))
-    -   [[Load Packages and Data](#load-packages-and-data)](#[load-packages-and-data](#load-packages-and-data))
-    -   [[Data Structure](#data-structure)](#[data-structure](#data-structure))
-    -   [[Fit the Model: Hierarchical Cluster](#fit-the-model-hierarchical-cluster)](#[fit-the-model-hierarchical-cluster](#fit-the-model-hierarchical-cluster))
-    -   [[Assigning Clusters](#assigning-clusters)](#[assigning-clusters](#assigning-clusters))
-        -   [[Cluster Loading](#cluster-loading)](#[cluster-loading](#cluster-loading))
-        -   [[Cluster Text](#cluster-text)](#[cluster-text](#cluster-text))
-        -   [[Cluster Frequent Terms](#cluster-frequent-terms)](#[cluster-frequent-terms](#cluster-frequent-terms))
-        -   [[Clusters, Terms, and Docs Plot](#clusters-terms-and-docs-plot)](#[clusters-terms-and-docs-plot](#clusters-terms-and-docs-plot))
-        -   [[Cluster Documents](#cluster-documents)](#[cluster-documents](#cluster-documents))
-    -   [[Putting it Together](#putting-it-together)](#[putting-it-together](#putting-it-together))
+-   [Functions](#functions)
+-   [Installation](#installation)
+-   [Contact](#contact)
+-   [Demonstration](#demonstration)
+    -   [Load Packages and Data](#load-packages-and-data)
+    -   [Data Structure](#data-structure)
+    -   [Fit the Model: Hierarchical Cluster](#fit-the-model-hierarchical-cluster)
+    -   [Assigning Clusters](#assigning-clusters)
+        -   [Cluster Loading](#cluster-loading)
+        -   [Cluster Text](#cluster-text)
+        -   [Cluster Frequent Terms](#cluster-frequent-terms)
+        -   [Clusters, Terms, and Docs Plot](#clusters-terms-and-docs-plot)
+        -   [Cluster Documents](#cluster-documents)
+    -   [Putting it Together](#putting-it-together)
 
 Functions
 ============
@@ -138,10 +138,10 @@ the development version:
 Contact
 =======
 
-You are welcome to:   
-* submit suggestions and bug-reports at: <https://github.com/trinker/hclustext/issues>   
-* send a pull request on: <https://github.com/trinker/hclustext/>  
-* compose a friendly e-mail to: <tyler.rinker@gmail.com>
+You are welcome to:    
+- submit suggestions and bug-reports at: <https://github.com/trinker/hclustext/issues>    
+- send a pull request on: <https://github.com/trinker/hclustext/>    
+- compose a friendly e-mail to: <tyler.rinker@gmail.com>    
 
 Demonstration
 =============
@@ -460,7 +460,7 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 7.791764 secs
+    ## Time difference of 6.713966 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)

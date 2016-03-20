@@ -22,16 +22,18 @@ get_dtm <- function(x, ...){
 #' @export
 #' @rdname get_dtm
 #' @method get_dtm data_store
-get_dtm.hierarchical_cluster <- function(x, ...){
-    get_dtm(attributes(x)[["text_data_store"]][["data"]])
+get_dtm.data_store <- function(x, ...){
+    x[["dtm"]]
 }
 
 
 #' @export
 #' @rdname get_dtm
 #' @method get_dtm hierarchical_cluster
-get_dtm.data_store <- function(x, ...){
-    x[["dtm"]]
+get_dtm.hierarchical_cluster <- function(x, ...){
+    get_dtm(attributes(x)[["text_data_store"]][["data"]])
 }
+
+
 
 
