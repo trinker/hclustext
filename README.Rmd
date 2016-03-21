@@ -131,7 +131,7 @@ plot(myfit, h = .75)
 
 ## Assigning Clusters
 
-The `assign_cluster` function allows the user to dictate the umber of clusters.  Because the model has already been fit the cluster assignment is merely selecting the branches from the dendrogram, and is thus very quick.  Unlike many clustering techniques the number of clusters is done after the model is fit, this allows for speedy cluster assignment, meaning the user can experiment with the number of clusters.
+The `assign_cluster` function allows the user to dictate the number of clusters.  Because the model has already been fit the cluster assignment is merely selecting the branches from the dendrogram, and is thus very quick.  Unlike many clustering techniques the number of clusters is done after the model is fit, this allows for speedy cluster assignment, meaning the user can experiment with the number of clusters.
 
 
 ```{r}

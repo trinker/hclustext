@@ -16,7 +16,7 @@ get_terms(x, term.cutoff = 0.1, min.n = 2, nrow = NULL, ...)
 \item{term.cutoff}{The lowest min/max scaled tf-idf weighting to consider
 as a document's salient term.}
 
-\item{min.n}{The minimum number o terms a term must appear in a topic to be
+\item{min.n}{The minimum number of terms a term must appear in a topic to be
 displayed in the returned \code{\link[base]{data.frame}}s.}
 
 \item{nrow}{The max number of rows to display in the returned

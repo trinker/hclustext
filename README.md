@@ -237,7 +237,7 @@ groups each of the candidates together at each of the debate times.
 Assigning Clusters
 ------------------
 
-The `assign_cluster` function allows the user to dictate the umber of
+The `assign_cluster` function allows the user to dictate the number of
 clusters. Because the model has already been fit the cluster assignment
 is merely selecting the branches from the dendrogram, and is thus very
 quick. Unlike many clustering techniques the number of clusters is done
@@ -460,7 +460,7 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 6.713966 secs
+    ## Time difference of 6.067581 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)

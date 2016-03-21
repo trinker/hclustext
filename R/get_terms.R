@@ -6,7 +6,7 @@
 #' @param x A \code{\link[hclustext]{assign_cluster}} object.
 #' @param term.cutoff The lowest min/max scaled tf-idf weighting to consider
 #' as a document's salient term.
-#' @param min.n The minimum number o terms a term must appear in a topic to be
+#' @param min.n The minimum number of terms a term must appear in a topic to be
 #' displayed in the returned \code{\link[base]{data.frame}}s.
 #' @param nrow The max number of rows to display in the returned
 #' \code{\link[base]{data.frame}}s.
