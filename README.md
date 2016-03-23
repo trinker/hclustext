@@ -51,6 +51,7 @@ Table of Contents
         -   [Clusters, Terms, and Docs Plot](#clusters-terms-and-docs-plot)
         -   [Cluster Documents](#cluster-documents)
     -   [Putting it Together](#putting-it-together)
+    -   [An Experiment](#an-experiment)
 
 Functions
 ============
@@ -460,7 +461,7 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 6.067581 secs
+    ## Time difference of 7.257184 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
@@ -584,3 +585,264 @@ texts and terms) to a random 5 clusters for the sake of space.
     ##      term n
     ## 1    coal 4
     ## 2 natural 3
+
+An Experiment
+-------------
+
+It seems to me that if the hierarchical clustering is function as
+expected we'd see topics clustering together within a conversation as
+the natural eb and flow of a conversation is to talk around a topic for
+a while and then move on to the next related topic. A Gantt style plot
+of topics across time seems like an excellent way to observe clustering
+across time. In the experiment I first ran the hierarchical clustering
+at the sentence level for all participants in the 2012 presidential
+debates data set. I then decided to use turn of talk as the unit of
+analysis. Finally, I pulled out the two candidates (President Obama and
+Romney) and faceted n their topic use over time.
+
+    if (!require("pacman")) install.packages("pacman")
+    pacman::p_load(dplyr, hclustext, textshape, ggplot2, stringi)
+
+    myfit3 <- presidential_debates_2012 %>%
+        mutate(tot = gsub("\\..+$", "", tot)) %>%
+        with(data_store(dialogue)) %>%
+        hierarchical_cluster()
+
+    plot(myfit3, 75)
+
+![](inst/figure/unnamed-chunk-14-1.png)
+
+Can & Ozkarahan's (1990) formula indicated a `k = 259`. This umber
+seemed overly large. I used `k = 75` for the number of topics as it
+seemed unreasonable that there'd be more topics than this but with
+`k = 75` over half of the sentences loaded on one cluster. Note the use
+of the `attribute` `join` from `assign_cluster` to make joining back to
+the original data set easier.
+
+    k <- 75
+    ca3 <- assign_cluster(myfit3, k = k)
+
+    presidential_debates_2012 %>%
+        mutate(tot = gsub("\\..+$", "", tot)) %>%
+        tbl_df() %>%
+        attributes(ca3)$join() %>% 
+        group_by(time) %>%
+        mutate(
+            word_count = stringi::stri_count_words(dialogue),
+            start = starts(word_count),
+            end = ends(word_count)
+        ) %>%
+        na.omit() %>%
+        mutate(cluster = factor(cluster, levels = k:1)) %>%
+        ggplot2::ggplot(ggplot2::aes(x = start-2, y = cluster, xend = end+2, yend = cluster)) +
+            ggplot2::geom_segment(ggplot2::aes(position="dodge"), color = 'white', size = 3) +
+            ggplot2::theme_bw() +
+            ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'grey20'),
+                panel.grid.minor.x = ggplot2::element_blank(),
+                panel.grid.major.x = ggplot2::element_blank(),
+                panel.grid.minor.y = ggplot2::element_blank(),
+                panel.grid.major.y = ggplot2::element_line(color = 'grey35'),
+                strip.text.y = ggplot2::element_text(angle=0, hjust = 0),
+                strip.background = ggplot2::element_blank())  +
+                ggplot2::facet_wrap(~time, scales='free', ncol=1) +
+                ggplot2::labs(x="Duration (words)", y="Cluster")
+
+    ## Joining by: "id_temporary"
+
+![](inst/figure/unnamed-chunk-15-1.png)
+
+Right away we notice that not all topics are used across all three
+times. This is encouraging that the clustering is working as expected as
+we'd expect some overlap in debate topics as well as some unique topics.
+However, there were so many topics clustering on cluster 3 that I had to
+make some decisions. I could (a) ignore this mass and essentially throw
+out half the data that loaded on a single cluster, (b) increase `k` to
+split up the mass loading on cluster 3, (c) change the unit of analysis.
+It seemed the first option was wasteful of data and could miss
+information. The second approach could lead to a model that had so many
+topics it wouldn't be meaningful. The last approach seemed reasonable,
+inspecting the cluster text showed that many were capturing functions of
+language rather than content. For example, people use *"Oh."* to
+indicate agreement. This isn't a topic but the clustering would group
+sentences that use this convention together. Combining this sentence
+with other sentences in the turn of talk are more likely to get the
+content we're after.
+
+Next I used the `textshape::combine` function to group turns of talk
+together.
+
+    myfit4 <- presidential_debates_2012 %>%
+        mutate(tot = gsub("\\..+$", "", tot)) %>%
+        textshape::combine() %>% 
+        with(data_store(dialogue, stopwords = tm::stopwords("english"), min.char = 3)) %>%
+        hierarchical_cluster()
+
+    plot(myfit4, k = 80)
+
+![](inst/figure/unnamed-chunk-16-1.png)
+
+The distribution of turns of talk on clusters looked much better
+distributed. I used `k = 60` for the number of topics.
+
+    k <- 80
+    ca4 <- assign_cluster(myfit4, k = k)
+
+    presidential_debates_2012 %>%
+        mutate(tot = gsub("\\..+$", "", tot)) %>%
+        textshape::combine() %>% 
+        tbl_df() %>%
+        attributes(ca4)$join() %>% 
+        group_by(time) %>%
+        mutate(
+            word_count = stringi::stri_count_words(dialogue),
+            start = starts(word_count),
+            end = ends(word_count)
+        ) %>%
+        na.omit() %>%
+        mutate(cluster = factor(cluster, levels = k:1)) %>%
+        ggplot2::ggplot(ggplot2::aes(x = start-2, y = cluster, xend = end+2, yend = cluster)) +
+            ggplot2::geom_segment(ggplot2::aes(position="dodge"), color = 'white', size = 3) +
+            ggplot2::theme_bw() +
+            ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'grey20'),
+                panel.grid.minor.x = ggplot2::element_blank(),
+                panel.grid.major.x = ggplot2::element_blank(),
+                panel.grid.minor.y = ggplot2::element_blank(),
+                panel.grid.major.y = ggplot2::element_line(color = 'grey35'),
+                strip.text.y = ggplot2::element_text(angle=0, hjust = 0),
+                strip.background = ggplot2::element_blank())  +
+                ggplot2::facet_wrap(~time, scales='free', ncol=1) +
+                ggplot2::labs(x="Duration (words)", y="Cluster")
+
+    ## Joining by: "id_temporary"
+
+![](inst/figure/unnamed-chunk-17-1.png)
+
+The plots looked less messy and indeed topics do appear to be clustering
+around one another, though *time 1*'s talk is loading heavily onto a
+single cluster in comparison to the much more evenly distributed
+clusters in *time 2*. I wanted to see how the primary participants, the
+candidates, compared to each other in topic use.
+
+In this last bit of analysis I filter out all participants except Obama
+and Romeny and facet by participant across time.
+
+    myfit5 <- presidential_debates_2012 %>%
+        mutate(tot = gsub("\\..+$", "", tot)) %>%
+        textshape::combine() %>% 
+        filter(person %in% c("ROMNEY", "OBAMA")) %>%
+        with(data_store(dialogue, stopwords = tm::stopwords("english"), min.char = 3)) %>%
+        hierarchical_cluster()
+
+
+    plot(myfit5, 50)
+
+![](inst/figure/unnamed-chunk-18-1.png)
+
+Based on the dendrogram, I used `k = 50` for the number of topics.
+
+    k <- 50
+    ca5 <- assign_cluster(myfit5, k = k)
+
+    presidential_debates_2012 %>%
+        mutate(tot = gsub("\\..+$", "", tot)) %>%
+        textshape::combine() %>% 
+        filter(person %in% c("ROMNEY", "OBAMA")) %>%
+        tbl_df() %>%
+        attributes(ca5)$join() %>% 
+        group_by(time) %>%
+        mutate(
+            word_count = stringi::stri_count_words(dialogue),
+            start = starts(word_count),
+            end = ends(word_count)
+        ) %>%
+        na.omit() %>%
+        mutate(cluster = factor(cluster, levels = k:1)) %>%
+        ggplot2::ggplot(ggplot2::aes(x = start-10, y = cluster, xend = end+10, yend = cluster)) +
+            ggplot2::geom_segment(ggplot2::aes(position="dodge"), color = 'white', size = 3) +
+            ggplot2::theme_bw() +
+            ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'grey20'),
+                panel.grid.minor.x = ggplot2::element_blank(),
+                panel.grid.major.x = ggplot2::element_blank(),
+                panel.grid.minor.y = ggplot2::element_blank(),
+                panel.grid.major.y = ggplot2::element_line(color = 'grey35'),
+                strip.text.y = ggplot2::element_text(angle=0, hjust = 0),
+                strip.background = ggplot2::element_blank())  +
+                ggplot2::facet_grid(person~time, scales='free', space='free') +
+                ggplot2::labs(x="Duration (words)", y="Cluster")
+
+    ## Joining by: "id_temporary"
+
+![](inst/figure/unnamed-chunk-19-1.png)
+
+If you're curious about the heaviest weighted tf-idf terms in each
+cluster the next code chunk provides the top five weighted terms used in
+each cluster. If a cluster has `...` no terms met the minimum tf-idf
+cut-off. Below this I provide a bar plot of the frequencies of clusters
+to help put the other information into perspective.
+
+    invisible(Map(function(x, y){
+
+        if (is.null(x)) {
+            cat(sprintf("Cluster %s: ...\n", y))
+        } else {
+            m <- dplyr::top_n(x, 5, n)
+            o <- paste(paste0(m[[1]], " (", m[[2]], ")"), collapse="; ")
+            cat(sprintf("Cluster %s: %s\n", y, o))       
+        }
+
+    }, get_terms(ca5, .02), names(get_terms(ca5, .02))))
+
+    ## Cluster 1: medicare (5); back (2); topic (2)
+    ## Cluster 2: can (3); get (3); just (3); candy (2); chance (2); going (2); indicated (2); major (2); mister (2); president (2); private (2); product (2); second (2); someone (2); spontaneous (2); still (2)
+    ## Cluster 3: sorry (3)
+    ## Cluster 4: absolutely (3)
+    ## Cluster 5: dodd (3); frank (3); regulation (3); banks (2)
+    ## Cluster 6: yes (3)
+    ## Cluster 7: let (4); bob (2)
+    ## Cluster 8: ...
+    ## Cluster 9: first (3); one (3); way (3); become (2); came (2); cut (2); governor (2); israel (2); nation (2); number (2); office (2); sunday (2)
+    ## Cluster 10: time (3); issue (2); used (2)
+    ## Cluster 11: well (3)
+    ## Cluster 12: respond (2)
+    ## Cluster 13: ...
+    ## Cluster 14: choice (2); economy (2); election (2); forward (2); whether (2)
+    ## Cluster 15: companies (2); investing (2)
+    ## Cluster 16: great (3)
+    ## Cluster 17: done (3); leadership (3); get (2); role (2)
+    ## Cluster 18: say (3); party (2)
+    ## Cluster 19: energy (3)
+    ## Cluster 20: yeah (3); good (2); thanks (2)
+    ## Cluster 21: detroit (3); answer (2)
+    ## Cluster 22: coal (3); oil (3); bunch (2); governor (2); iowa (2); jobs (2); wind (2)
+    ## Cluster 23: cut (2); federal (2); land (2); licenses (2); permits (2); waters (2)
+    ## Cluster 24: true (4)
+    ## Cluster 25: cut (3); much (3)
+    ## Cluster 26: question (5); answer (3)
+    ## Cluster 27: right (2)
+    ## Cluster 28: actually (3); got (2)
+    ## Cluster 29: production (4); government (2); land (2)
+    ## Cluster 30: governor (9); romney (2)
+    ## Cluster 31: believe (2)
+    ## Cluster 32: candy (5)
+    ## Cluster 33: balance (2); budget (2); military (2); trillion (2)
+    ## Cluster 34: women (3)
+    ## Cluster 35: want (5); make (4); sure (4); immigration (2)
+    ## Cluster 36: ...
+    ## Cluster 37: lorraine (2)
+    ## Cluster 38: pension (4); chinese (2); investments (2); looked (2); mister (2); outside (2); trust (2)
+    ## Cluster 39: check (3); record (3)
+    ## Cluster 40: pakistan (2)
+    ## Cluster 41: act (3); attack (3); terror (3); day (2); garden (2); rose (2); said (2)
+    ## Cluster 42: troops (4); agreement (2); forces (2); thought (2); thousand (2)
+    ## Cluster 43: happy (3)
+    ## Cluster 44: indicated (3)
+    ## Cluster 45: syria (3)
+    ## Cluster 46: ten (2); years (2)
+    ## Cluster 47: iran (2)
+    ## Cluster 48: industry (3); liquidate (3)
+    ## Cluster 49: look (3); can (2); people (2)
+    ## Cluster 50: wrong (4)
+
+    invisible(summary(ca5))
+
+![](inst/figure/unnamed-chunk-21-1.png)

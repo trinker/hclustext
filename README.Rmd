@@ -241,4 +241,177 @@ get_terms(ca2, term.cutoff = .07)[inds]
 ```
 
 
+## An Experiment
+
+It seems to me that if the hierarchical clustering is function as expected we'd see topics clustering together within a conversation as the natural eb and flow of a conversation is to talk around a topic for a while and then move on to the next related topic.  A Gantt style plot of topics across time seems like an excellent way to observe clustering across time.  In the experiment I first ran the hierarchical clustering at the sentence level for all participants in the 2012 presidential debates data set.  I then decided to use turn of talk as the unit of analysis.  Finally, I pulled out the two candidates (President Obama and Romney) and faceted n their topic use over time. 
+
+```{r, fig.width=10, fig.height = 9}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(dplyr, hclustext, textshape, ggplot2, stringi)
+
+myfit3 <- presidential_debates_2012 %>%
+    mutate(tot = gsub("\\..+$", "", tot)) %>%
+    with(data_store(dialogue)) %>%
+    hierarchical_cluster()
+
+plot(myfit3, 75)
+```
+
+Can & Ozkarahan's (1990) formula indicated a `k = 259`.  This umber seemed overly large.  I used `k = 75` for the number of topics as it seemed unreasonable that there'd be more topics than this but with `k = 75` over half of the sentences loaded on one cluster.  Note the use of the `attribute` `join` from `assign_cluster` to make joining back to the original data set easier.
+
+
+```{r, fig.width=14, fig.height = 16}
+k <- 75
+ca3 <- assign_cluster(myfit3, k = k)
+
+presidential_debates_2012 %>%
+    mutate(tot = gsub("\\..+$", "", tot)) %>%
+    tbl_df() %>%
+    attributes(ca3)$join() %>% 
+    group_by(time) %>%
+    mutate(
+        word_count = stringi::stri_count_words(dialogue),
+        start = starts(word_count),
+        end = ends(word_count)
+    ) %>%
+    na.omit() %>%
+    mutate(cluster = factor(cluster, levels = k:1)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = start-2, y = cluster, xend = end+2, yend = cluster)) +
+        ggplot2::geom_segment(ggplot2::aes(position="dodge"), color = 'white', size = 3) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'grey20'),
+            panel.grid.minor.x = ggplot2::element_blank(),
+            panel.grid.major.x = ggplot2::element_blank(),
+            panel.grid.minor.y = ggplot2::element_blank(),
+            panel.grid.major.y = ggplot2::element_line(color = 'grey35'),
+            strip.text.y = ggplot2::element_text(angle=0, hjust = 0),
+            strip.background = ggplot2::element_blank())  +
+            ggplot2::facet_wrap(~time, scales='free', ncol=1) +
+            ggplot2::labs(x="Duration (words)", y="Cluster")
+```
+
+Right away we notice that not all topics are used across all three times.  This is encouraging that the clustering is working as expected as we'd expect some overlap in debate topics as well as some unique topics.  However, there were so many topics clustering on cluster 3 that I had to make some decisions.  I could (a) ignore this mass and essentially throw out half the data that loaded on a single cluster, (b) increase `k` to split up the mass loading on cluster 3, (c) change the unit of analysis.  It seemed the first option was wasteful of data and could miss information.  The second approach could lead to a model that had so many topics it wouldn't be meaningful.  The last approach seemed reasonable, inspecting the cluster text showed that many were capturing functions of language rather than content.  For example, people use *"Oh."* to indicate agreement.  This isn't a topic but the clustering would group sentences that use this convention together.  Combining this sentence with other sentences in the turn of talk are more likely to get the content we're after.
+
+Next I used the `textshape::combine` function to group turns of talk together.
+
+```{r, fig.width=10, fig.height = 9}
+myfit4 <- presidential_debates_2012 %>%
+    mutate(tot = gsub("\\..+$", "", tot)) %>%
+    textshape::combine() %>% 
+    with(data_store(dialogue, stopwords = tm::stopwords("english"), min.char = 3)) %>%
+    hierarchical_cluster()
+
+plot(myfit4, k = 80)
+```
+
+The distribution of turns of talk on clusters looked much better distributed.  I used `k = 60` for the number of topics.
+
+
+```{r, fig.width=14, fig.height = 16}
+k <- 80
+ca4 <- assign_cluster(myfit4, k = k)
+
+presidential_debates_2012 %>%
+    mutate(tot = gsub("\\..+$", "", tot)) %>%
+    textshape::combine() %>% 
+    tbl_df() %>%
+    attributes(ca4)$join() %>% 
+    group_by(time) %>%
+    mutate(
+        word_count = stringi::stri_count_words(dialogue),
+        start = starts(word_count),
+        end = ends(word_count)
+    ) %>%
+    na.omit() %>%
+    mutate(cluster = factor(cluster, levels = k:1)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = start-2, y = cluster, xend = end+2, yend = cluster)) +
+        ggplot2::geom_segment(ggplot2::aes(position="dodge"), color = 'white', size = 3) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'grey20'),
+            panel.grid.minor.x = ggplot2::element_blank(),
+            panel.grid.major.x = ggplot2::element_blank(),
+            panel.grid.minor.y = ggplot2::element_blank(),
+            panel.grid.major.y = ggplot2::element_line(color = 'grey35'),
+            strip.text.y = ggplot2::element_text(angle=0, hjust = 0),
+            strip.background = ggplot2::element_blank())  +
+            ggplot2::facet_wrap(~time, scales='free', ncol=1) +
+            ggplot2::labs(x="Duration (words)", y="Cluster")
+```
+
+
+The plots looked less messy and indeed topics do appear to be clustering around one another, though *time 1*'s talk is loading heavily onto a single cluster in comparison to the much more evenly distributed clusters in *time 2*.  I wanted to see how the primary participants, the candidates, compared to each other in topic use. 
+
+In this last bit of analysis I filter out all participants except Obama and Romeny and facet by participant across time.
+
+```{r, fig.width=10, fig.height = 9}
+myfit5 <- presidential_debates_2012 %>%
+    mutate(tot = gsub("\\..+$", "", tot)) %>%
+    textshape::combine() %>% 
+    filter(person %in% c("ROMNEY", "OBAMA")) %>%
+    with(data_store(dialogue, stopwords = tm::stopwords("english"), min.char = 3)) %>%
+    hierarchical_cluster()
+
+
+plot(myfit5, 50)
+```
+
+Based on the dendrogram, I used `k = 50` for the number of topics.
+
+
+```{r, fig.width=14, fig.height = 12}
+k <- 50
+ca5 <- assign_cluster(myfit5, k = k)
+
+presidential_debates_2012 %>%
+    mutate(tot = gsub("\\..+$", "", tot)) %>%
+    textshape::combine() %>% 
+    filter(person %in% c("ROMNEY", "OBAMA")) %>%
+    tbl_df() %>%
+    attributes(ca5)$join() %>% 
+    group_by(time) %>%
+    mutate(
+        word_count = stringi::stri_count_words(dialogue),
+        start = starts(word_count),
+        end = ends(word_count)
+    ) %>%
+    na.omit() %>%
+    mutate(cluster = factor(cluster, levels = k:1)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = start-10, y = cluster, xend = end+10, yend = cluster)) +
+        ggplot2::geom_segment(ggplot2::aes(position="dodge"), color = 'white', size = 3) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'grey20'),
+            panel.grid.minor.x = ggplot2::element_blank(),
+            panel.grid.major.x = ggplot2::element_blank(),
+            panel.grid.minor.y = ggplot2::element_blank(),
+            panel.grid.major.y = ggplot2::element_line(color = 'grey35'),
+            strip.text.y = ggplot2::element_text(angle=0, hjust = 0),
+            strip.background = ggplot2::element_blank())  +
+            ggplot2::facet_grid(person~time, scales='free', space='free') +
+            ggplot2::labs(x="Duration (words)", y="Cluster")
+```
+
+
+If you're curious about the heaviest weighted tf-idf terms in each cluster the next code chunk provides the top five weighted terms used in each cluster.  If a cluster has `...` no terms met the minimum tf-idf cut-off.  Below this I provide a bar plot of the frequencies of clusters to help put the other information into perspective.
+
+
+
+```{r}
+invisible(Map(function(x, y){
+
+    if (is.null(x)) {
+        cat(sprintf("Cluster %s: ...\n", y))
+    } else {
+        m <- dplyr::top_n(x, 5, n)
+        o <- paste(paste0(m[[1]], " (", m[[2]], ")"), collapse="; ")
+        cat(sprintf("Cluster %s: %s\n", y, o))       
+    }
+
+}, get_terms(ca5, .02), names(get_terms(ca5, .02))))
+
+```
+
+```{r, fig.height = 9}
+invisible(summary(ca5))
+```
+
 
