@@ -25,7 +25,11 @@ clusters).  If this argument is supplied \code{k} is ignored.}
 \value{
 Returns an \code{assign_cluster} object; a named vector of cluster
 assignments with documents as names.  The object also contains the original
-\code{data_storage} object.
+\code{data_storage} object and a \code{join} function.  \code{join} is a 
+function (a closure) that captures information about the \code{assign_cluster}
+that makes rejoining to the original data set simple.  The user simply 
+supplies the original data set as an argument to \code{join} 
+(\code{attributes(FROM_ASSIGN_CLUSTER)$join(ORIGINAL_DATA)}).
 }
 \description{
 Assign clusters to documents/text elements.
@@ -57,6 +61,9 @@ x2 <- presidential_debates_2012 \%>\%
 
 ca <- assign_cluster(x2, k = 55)
 summary(ca)
+
+## add to original data
+attributes(ca)$join(presidential_debates_2012)
 
 ## split text into clusters
 get_text(ca)
