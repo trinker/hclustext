@@ -414,4 +414,4 @@ invisible(Map(function(x, y){
 invisible(summary(ca5))
 ```
 
-
+It appears that in fact the topics do cluster within segments of time as we'd expect.  This is more apparent when turn of talk is used as the unit of analysis (document level) rather than each sentence.

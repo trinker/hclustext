@@ -9,7 +9,7 @@ developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repo
 Status](https://travis-ci.org/trinker/hclustext.svg?branch=master)](https://travis-ci.org/trinker/hclustext)
 [![Coverage
 Status](https://coveralls.io/repos/trinker/hclustext/badge.svg?branch=master)](https://coveralls.io/r/trinker/hclustext?branch=master)
-<a href="https://img.shields.io/badge/Version-0.1.0-orange.svg"><img src="https://img.shields.io/badge/Version-0.1.0-orange.svg" alt="Version"/></a>
+<a href="https://img.shields.io/badge/Version-0.1.1-orange.svg"><img src="https://img.shields.io/badge/Version-0.1.1-orange.svg" alt="Version"/></a>
 </p>
 <img src="inst/hclustext_logo/r_hclustext.png" width="150" alt="readability Logo">
 
@@ -461,7 +461,7 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 7.257184 secs
+    ## Time difference of 7.848659 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
@@ -846,3 +846,7 @@ to help put the other information into perspective.
     invisible(summary(ca5))
 
 ![](inst/figure/unnamed-chunk-21-1.png)
+
+It appears that in fact the topics do cluster within segments of time as
+we'd expect. This is more apparent when turn of talk is used as the unit
+of analysis (document level) rather than each sentence.
