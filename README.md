@@ -612,7 +612,7 @@ Romney) and faceted on their topic use over time.
 
 ![](inst/figure/unnamed-chunk-14-1.png)
 
-Can & Ozkarahan's (1990) formula indicated a `k = 259`. This umber
+Can & Ozkarahan's (1990) formula indicated a `k = 259`. This number
 seemed overly large. I used `k = 75` for the number of topics as it
 seemed unreasonable that there'd be more topics than this but with
 `k = 75` over half of the sentences loaded on one cluster. Note the use
