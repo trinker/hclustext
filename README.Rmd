@@ -243,7 +243,7 @@ get_terms(ca2, term.cutoff = .07)[inds]
 
 ## An Experiment
 
-It seems to me that if the hierarchical clustering is function as expected we'd see topics clustering together within a conversation as the natural eb and flow of a conversation is to talk around a topic for a while and then move on to the next related topic.  A Gantt style plot of topics across time seems like an excellent way to observe clustering across time.  In the experiment I first ran the hierarchical clustering at the sentence level for all participants in the 2012 presidential debates data set.  I then decided to use turn of talk as the unit of analysis.  Finally, I pulled out the two candidates (President Obama and Romney) and faceted n their topic use over time. 
+It seems to me that if the hierarchical clustering is function as expected we'd see topics clustering together within a conversation as the natural eb and flow of a conversation is to talk around a topic for a while and then move on to the next related topic.  A Gantt style plot of topics across time seems like an excellent way to observe clustering across time.  In the experiment I first ran the hierarchical clustering at the sentence level for all participants in the 2012 presidential debates data set.  I then decided to use turn of talk as the unit of analysis.  Finally, I pulled out the two candidates (President Obama and Romney) and faceted on their topic use over time. 
 
 ```{r, fig.width=10, fig.height = 9}
 if (!require("pacman")) install.packages("pacman")
