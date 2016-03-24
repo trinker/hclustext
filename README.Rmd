@@ -304,7 +304,7 @@ myfit4 <- presidential_debates_2012 %>%
 plot(myfit4, k = 80)
 ```
 
-The distribution of turns of talk looked much more dispersed across clusters.  I used `k = 60` for the number of topics.
+The distribution of turns of talk looked much more dispersed across clusters.  I used `k = 80` for the number of topics.
 
 
 ```{r, fig.width=14, fig.height = 16}
