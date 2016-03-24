@@ -598,7 +598,7 @@ across time. In the experiment I first ran the hierarchical clustering
 at the sentence level for all participants in the 2012 presidential
 debates data set. I then decided to use turn of talk as the unit of
 analysis. Finally, I pulled out the two candidates (President Obama and
-Romney) and faceted n their topic use over time.
+Romney) and faceted on their topic use over time.
 
     if (!require("pacman")) install.packages("pacman")
     pacman::p_load(dplyr, hclustext, textshape, ggplot2, stringi)
