@@ -682,7 +682,7 @@ together.
 ![](inst/figure/unnamed-chunk-16-1.png)
 
 The distribution of turns of talk looked much more dispersed across
-clusters. I used `k = 60` for the number of topics.
+clusters. I used `k = 80` for the number of topics.
 
     k <- 80
     ca4 <- assign_cluster(myfit4, k = k)
