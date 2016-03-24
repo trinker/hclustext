@@ -304,7 +304,7 @@ myfit4 <- presidential_debates_2012 %>%
 plot(myfit4, k = 80)
 ```
 
-The distribution of turns of talk on clusters looked much better distributed.  I used `k = 60` for the number of topics.
+The distribution of turns of talk looked much more dispersed across clusters.  I used `k = 60` for the number of topics.
 
 
 ```{r, fig.width=14, fig.height = 16}
@@ -339,7 +339,7 @@ presidential_debates_2012 %>%
 ```
 
 
-The plots looked less messy and indeed topics do appear to be clustering around one another, though *time 1*'s talk is loading heavily onto a single cluster in comparison to the much more evenly distributed clusters in *time 2*.  I wanted to see how the primary participants, the candidates, compared to each other in topic use. 
+The plots looked less messy and indeed topics do appear to be clustering around one another.  I wanted to see how the primary participants, the candidates, compared to each other in topic use. 
 
 In this last bit of analysis I filter out all participants except Obama and Romeny and facet by participant across time.
 

@@ -461,7 +461,7 @@ texts and terms) to a random 5 clusters for the sake of space.
 
     difftime(Sys.time(), .tic)
 
-    ## Time difference of 7.848659 secs
+    ## Time difference of 7.707485 secs
 
     ## View Document Loadings
     ca2 <- assign_cluster(myfit2, k = 100)
@@ -681,8 +681,8 @@ together.
 
 ![](inst/figure/unnamed-chunk-16-1.png)
 
-The distribution of turns of talk on clusters looked much better
-distributed. I used `k = 60` for the number of topics.
+The distribution of turns of talk looked much more dispersed across
+clusters. I used `k = 60` for the number of topics.
 
     k <- 80
     ca4 <- assign_cluster(myfit4, k = k)
@@ -718,9 +718,7 @@ distributed. I used `k = 60` for the number of topics.
 ![](inst/figure/unnamed-chunk-17-1.png)
 
 The plots looked less messy and indeed topics do appear to be clustering
-around one another, though *time 1*'s talk is loading heavily onto a
-single cluster in comparison to the much more evenly distributed
-clusters in *time 2*. I wanted to see how the primary participants, the
+around one another. I wanted to see how the primary participants, the
 candidates, compared to each other in topic use.
 
 In this last bit of analysis I filter out all participants except Obama
