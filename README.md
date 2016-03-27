@@ -2,9 +2,9 @@ hclustext   [![Follow](https://img.shields.io/twitter/follow/tylerrinker.svg?sty
 ============
 
 
-[![Project Status: Active - The project has reached a stable, usable
-state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+**Devlopment Moved to clustext Package** [**-CLICK HERE-**](https://github.com/trinker/clustext)
+
+[![Project Status: Inactive - The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](http://www.repostatus.org/badges/latest/inactive.svg)](http://www.repostatus.org/#inactive)
 [![Build
 Status](https://travis-ci.org/trinker/hclustext.svg?branch=master)](https://travis-ci.org/trinker/hclustext)
 [![Coverage
